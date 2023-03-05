@@ -26,6 +26,7 @@ struct MapView: View {
         Map(coordinateRegion: $region, annotationItems: markers) { marker in
             MapPin(coordinate: marker.location, tint: .blue)
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

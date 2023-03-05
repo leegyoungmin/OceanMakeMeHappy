@@ -7,28 +7,62 @@
 import MapKit
 import SwiftUI
 
+struct TabBarItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let imageName: String
+}
+
 struct ContentView: View {
     @State private var selectedIndex: Int = 0
+    let tabBarImages: [TabBarItem] = [
+        TabBarItem(title: "", imageName: "map.fill"),
+        TabBarItem(title: "설정", imageName: "person.circle.fill")
+    ]
     private var navigationTitle: String {
-        return "Navigation Title (\(selectedIndex))"
+        return tabBarImages[selectedIndex].title
     }
     
     var body: some View {
         NavigationView {
-            TabView(selection: $selectedIndex) {
-                MapView()
-                    .tabItem {
-                        Label("지도로 보기", image: "")
-                    }
-                    .tag(0)
+            ZStack {
+                TabView(selection: $selectedIndex) {
+                    MapView()
+                        .tag(0)
+
+                    Text("Example")
+                        .tag(1)
+                }
                 
-                Text("Example")
-                    .tabItem {
-                        Label("설정", image: "")
+                VStack {
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        
+                        ForEach(tabBarImages.indices, id: \.self) { index in
+                            let item = tabBarImages[index]
+                            
+                            Button {
+                                self.selectedIndex = index
+                            } label: {
+                                Image(systemName: item.imageName)
+                            }
+                            .foregroundColor(selectedIndex == index ? .blue : .black)
+                        }
+                        
+                        Spacer()
                     }
-                    .tag(1)
+                    .frame(maxWidth: 200)
+                    .frame(minHeight: 50)
+                    .background(Color.white)
+                    .cornerRadius(25)
+                    .shadow(radius: 5)
+                }
             }
-            .navigationTitle(navigationTitle)
+            .customNavigationBar(leftView: {
+                Image(systemName: "heart.fill")
+            })
         }
     }
 }
