@@ -33,7 +33,7 @@ struct Beach: Decodable, Identifiable {
     }
 }
 
-struct Beachs: Decodable {
+struct Beaches: Decodable {
     let items: [Beach]
     
     enum CodingKeys: String, CodingKey {
