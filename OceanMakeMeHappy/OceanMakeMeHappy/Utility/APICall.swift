@@ -10,6 +10,7 @@ protocol APICall {
     var path: String { get }
     var method: String { get }
     var headers: [String: String]? { get }
+    var queries: [String: String]? { get }
     func body() throws -> Data?
 }
 
@@ -34,7 +35,17 @@ extension APIError: LocalizedError {
 
 extension APICall {
     func urlRequest(baseURL: String) throws -> URLRequest {
-        guard let url = URL(string: baseURL + path) else {
+        guard var component = URLComponents(string: baseURL) else {
+            throw APIError.invalidURL
+        }
+        
+        component.path = path
+        
+        if let queries = queries {
+            component.queryItems = queries.queries()
+        }
+
+        guard let url = component.url else {
             throw APIError.invalidURL
         }
         
@@ -43,5 +54,11 @@ extension APICall {
         request.allHTTPHeaderFields = headers
         request.httpBody = try body()
         return request
+    }
+}
+
+extension Dictionary where Key == String, Value == String {
+    func queries() -> [URLQueryItem] {
+        return self.map { .init(name: $0.key, value: $0.value) }
     }
 }
