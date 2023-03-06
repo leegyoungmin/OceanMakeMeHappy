@@ -17,6 +17,12 @@ struct MapView: View {
 //    @State private var region = Constant.basicRegion
 //    let markers: [Beach] = [.init(location: .init(latitude: 33.4348090000, longitude: 126.9230210000))]
     
+    @StateObject private var viewModel: MapViewModel
+    
+    init(mapViewModel: MapViewModel) {
+        _viewModel = StateObject(wrappedValue: mapViewModel)
+    }
+    
     var body: some View {
         VStack {
             EmptyView()
@@ -30,6 +36,15 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView()
+        MapView(
+            mapViewModel: MapViewModel(
+                webService: BeachListService(
+                    webRepository: BeachListWebRepository(
+                        session: .shared,
+                        baseURL: "http://apis.data.go.kr"
+                    )
+                )
+            )
+        )
     }
 }
