@@ -8,7 +8,7 @@ import Combine
 import Foundation
 
 protocol BeachWebRepository: WebRepository {
-    func loadBeaches() -> AnyPublisher<[Beach], Error>
+    func loadBeaches() -> AnyPublisher<Beaches, Error>
 }
 
 struct BeachListWebRepository: BeachWebRepository {
@@ -20,11 +20,9 @@ struct BeachListWebRepository: BeachWebRepository {
         self.baseURL = baseURL
     }
     
-    func loadBeaches() -> AnyPublisher<[Beach], Error> {
+    func loadBeaches() -> AnyPublisher<Beaches, Error> {
         return load(endPoint: API.allBeaches)
     }
-    
-    
 }
 
 
