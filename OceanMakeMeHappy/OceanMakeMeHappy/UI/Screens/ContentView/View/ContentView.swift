@@ -7,26 +7,19 @@
 import MapKit
 import SwiftUI
 
-struct TabBarItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let imageName: String
-}
+
 
 struct ContentView: View {
-    @State private var selectedIndex: Int = 0
-    let tabBarImages: [TabBarItem] = [
-        TabBarItem(title: "", imageName: "map.fill"),
-        TabBarItem(title: "설정", imageName: "person.circle.fill")
-    ]
-    private var navigationTitle: String {
-        return tabBarImages[selectedIndex].title
+    @StateObject private var viewModel: ContentViewModel
+    
+    init() {
+        _viewModel = StateObject(wrappedValue: ContentViewModel())
     }
     
     var body: some View {
         NavigationView {
             ZStack {
-                TabView(selection: $selectedIndex) {
+                TabView(selection: $viewModel.selectedIndex) {
                     MapView()
                         .tag(0)
 
@@ -40,15 +33,15 @@ struct ContentView: View {
                     HStack {
                         Spacer()
                         
-                        ForEach(tabBarImages.indices, id: \.self) { index in
-                            let item = tabBarImages[index]
+                        ForEach(viewModel.tabBarItems.indices, id: \.self) { index in
+                            let item = viewModel.tabBarItems[index]
                             
                             Button {
-                                self.selectedIndex = index
+                                viewModel.selectedIndex = index
                             } label: {
                                 Image(systemName: item.imageName)
                             }
-                            .foregroundColor(selectedIndex == index ? .blue : .black)
+                            .foregroundColor(viewModel.isSelectedIndex(with: index) ? .accentColor : .black)
                         }
                         
                         Spacer()
@@ -60,8 +53,11 @@ struct ContentView: View {
                     .shadow(radius: 5)
                 }
             }
-            .customNavigationBar(leftView: {
-                Image(systemName: "heart.fill")
+            .customNavigationBar(centerView: {
+                Image("IconImage")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
             })
         }
     }
