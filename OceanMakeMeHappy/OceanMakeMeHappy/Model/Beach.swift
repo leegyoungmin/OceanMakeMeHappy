@@ -5,14 +5,14 @@
 //  Copyright (c) 2023 Minii All rights reserved.
 
 import Foundation
-import MapKit
+import NMapsMap
 
 // MARK: - Item
 struct Beach: Decodable, Identifiable {
     var id = UUID()
     
     let name: String
-    let location: CLLocationCoordinate2D
+    let location: NMGLatLng
 
     enum CodingKeys: String, CodingKey {
         case name = "sta_nm"
@@ -29,7 +29,7 @@ struct Beach: Decodable, Identifiable {
         let latitude = Double(lat) ?? 0
         let longitude = Double(lon) ?? 0
         
-        self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        self.location = NMGLatLng(lat: latitude, lng: longitude)
     }
 }
 

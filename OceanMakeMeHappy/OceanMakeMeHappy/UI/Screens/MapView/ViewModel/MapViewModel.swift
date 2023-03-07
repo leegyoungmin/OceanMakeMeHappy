@@ -5,36 +5,16 @@
 //  Copyright (c) 2023 Minii All rights reserved.
 
 import Combine
-import MapKit
+import NMapsMap
 
 final class MapViewModel: ObservableObject {
-    private let webService: BeachService
-    
-    private var subscribers = Set<AnyCancellable>()
-    @Published var region = Constant.defaultRegion
     @Published var beachList = [Beach]()
+    var locations: [NMGLatLng] = []
     
-    init(webService: BeachService = BeachListService(webRepository: BeachListWebRepository())) {
-        self.webService = webService
-        
-        webService.load()
-            .replaceError(with: [])
-            .assign(to: \.beachList, on: self)
-            .store(in: &subscribers)
-
-    }
-}
-
-extension MapViewModel {
-    enum Constant {
-        static var defaultRegion = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(
-                latitude: 33.3642,
-                longitude: 126.5313
-            ),
-            span: MKCoordinateSpan(
-                latitudeDelta: 0.7, longitudeDelta: 0.7
-            )
-        )
+    init() {
+        if let beachList: Beaches = JSONDecoder().decodeLocalFile(with: "BeachList") {
+            self.beachList = beachList.items
+            self.locations = beachList.items.map { $0.location }
+        }
     }
 }
