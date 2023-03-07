@@ -17,11 +17,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if viewModel.selectedIndex == 0 {
-                    MapView(mapViewModel: MapViewModel())
-                } else if viewModel.selectedIndex == 1 {
-                    Text("Example")
-                }
+                NaverMapView(viewModel: MapViewModel())
                 
                 roundedTabBar()
             }
