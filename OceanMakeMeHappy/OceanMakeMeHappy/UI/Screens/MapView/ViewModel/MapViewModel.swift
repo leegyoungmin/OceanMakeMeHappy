@@ -14,7 +14,7 @@ final class MapViewModel: ObservableObject {
     @Published var region = Constant.defaultRegion
     @Published var beachList = [Beach]()
     
-    init(webService: BeachService) {
+    init(webService: BeachService = BeachListService(webRepository: BeachListWebRepository())) {
         self.webService = webService
         
         webService.load()

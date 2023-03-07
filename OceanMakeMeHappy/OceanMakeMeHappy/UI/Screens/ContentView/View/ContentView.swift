@@ -18,7 +18,7 @@ struct ContentView: View {
         NavigationView {
             ZStack {
                 if viewModel.selectedIndex == 0 {
-                    MapView(mapViewModel: MapViewModel(webService: BeachListService(webRepository: BeachListWebRepository(session: .shared, baseURL: "http://apis.data.go.kr"))))
+                    MapView(mapViewModel: MapViewModel())
                 } else if viewModel.selectedIndex == 1 {
                     Text("Example")
                 }

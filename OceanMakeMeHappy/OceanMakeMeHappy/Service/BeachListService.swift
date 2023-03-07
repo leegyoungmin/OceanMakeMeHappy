@@ -14,7 +14,7 @@ class BeachListService: BeachService {
     var subscribers = Set<AnyCancellable>()
     let webRepository: BeachListWebRepository
     
-    init(webRepository: BeachListWebRepository) {
+    init(webRepository: BeachListWebRepository = BeachListWebRepository()) {
         self.webRepository = webRepository
     }
     

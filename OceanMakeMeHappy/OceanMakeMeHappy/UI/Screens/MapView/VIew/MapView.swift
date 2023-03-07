@@ -15,8 +15,11 @@ struct MapView: View {
     }
     
     var body: some View {
-        Map(coordinateRegion: $viewModel.region, annotationItems: viewModel.beachList) { beach in
-            MapPin(coordinate: beach.location)
+        Map(
+            coordinateRegion: $viewModel.region,
+            annotationItems: viewModel.beachList
+        ) {
+            MapPin(coordinate: $0.location)
         }
         .edgesIgnoringSafeArea(.all)
     }
@@ -24,15 +27,6 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(
-            mapViewModel: MapViewModel(
-                webService: BeachListService(
-                    webRepository: BeachListWebRepository(
-                        session: .shared,
-                        baseURL: "http://apis.data.go.kr"
-                    )
-                )
-            )
-        )
+        MapView(mapViewModel: MapViewModel())
     }
 }

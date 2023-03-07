@@ -15,7 +15,7 @@ struct BeachListWebRepository: BeachWebRepository {
     var session: URLSession
     var baseURL: String
     
-    init(session: URLSession, baseURL: String) {
+    init(baseURL: String = "http://apis.data.go.kr", session: URLSession = .shared) {
         self.session = session
         self.baseURL = baseURL
     }
