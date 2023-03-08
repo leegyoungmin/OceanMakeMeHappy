@@ -49,7 +49,7 @@ struct NaverMapView: UIViewRepresentable {
                 marker.iconImage = NMF_MARKER_IMAGE_BLUE
                 marker.width *= 2
                 marker.height *= 2
-                let cameraUpdate = NMFCameraUpdate(scrollTo: marker.position, zoomTo: 15)
+                let cameraUpdate = NMFCameraUpdate(scrollTo: marker.position, zoomTo: 18)
                 cameraUpdate.reason = Int32(NMFMapChangedByControl)
                 cameraUpdate.animation = .fly
                 cameraUpdate.animationDuration = 1
@@ -73,11 +73,11 @@ extension NaverMapView {
         view.showScaleBar = false
         view.showLocationButton = false
         
-        view.mapView.locale = "ko_KR"
+        view.mapView.locale = "ko-KR"
         view.mapView.positionMode = .normal
         view.mapView.isNightModeEnabled = true
         view.mapView.zoomLevel = 9
-        view.mapView.maxZoomLevel = 15
+        view.mapView.maxZoomLevel = 18
         view.mapView.allowsRotating = false
         view.mapView.logoInteractionEnabled = false
         
@@ -101,7 +101,6 @@ extension NaverMapView {
             marker.iconImage = NMF_MARKER_IMAGE_LIGHTBLUE
             marker.userInfo = ["name": $0.name]
             marker.isHideCollidedCaptions = true
-            marker.isHideCollidedMarkers = true
             marker.isHideCollidedSymbols = true
             marker.touchHandler = touchedMarker(marker:)
         }
