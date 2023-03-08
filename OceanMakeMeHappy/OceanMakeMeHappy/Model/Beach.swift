@@ -7,57 +7,35 @@
 import Foundation
 import NMapsMap
 
+import Foundation
+
+// MARK: - Beach
+struct Beaches: Decodable {
+    let items: [Beach]
+}
+
+
 // MARK: - Item
-struct Beach: Decodable, Identifiable {
-    var id = UUID()
-    
+struct Beach: Decodable {
+    let num: Int
     let name: String
     let location: NMGLatLng
-
-    enum CodingKeys: String, CodingKey {
-        case name = "sta_nm"
-        case latitude = "lat"
-        case longitude = "lon"
+    
+    enum CodingKeys: CodingKey {
+        case num
+        case name
+        case longitude
+        case latitude
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.num = try container.decode(Int.self, forKey: .num)
         self.name = try container.decode(String.self, forKey: .name)
-        let lat = try container.decode(String.self, forKey: .latitude)
-        let lon = try container.decode(String.self, forKey: .longitude)
         
-        let latitude = Double(lat) ?? 0
-        let longitude = Double(lon) ?? 0
+        let longitude = try container.decode(Double.self, forKey: .longitude)
+        let latitude = try container.decode(Double.self, forKey: .latitude)
         
         self.location = NMGLatLng(lat: latitude, lng: longitude)
     }
 }
-
-struct Beaches: Decodable {
-    let items: [Beach]
-    
-    enum CodingKeys: String, CodingKey {
-        case getOceansBeachInfo
-        case items = "item"
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let infoContainer = try container.nestedContainer(
-            keyedBy: CodingKeys.self,
-            forKey: .getOceansBeachInfo
-        )
-        var itemsContainer = try infoContainer.nestedUnkeyedContainer(forKey: .items)
-        
-        var values = [Beach]()
-        
-        while itemsContainer.isAtEnd == false {
-            let beach = try itemsContainer.decode(Beach.self)
-            values.append(beach)
-        }
-        
-        items = values
-    }
-}
-
-

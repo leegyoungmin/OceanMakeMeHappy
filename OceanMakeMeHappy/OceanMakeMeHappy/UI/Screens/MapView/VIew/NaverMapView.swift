@@ -74,7 +74,6 @@ extension NaverMapView {
         view.showLocationButton = false
         
         view.mapView.locale = "ko_KR"
-        view.mapView.isZoomGestureEnabled = false
         view.mapView.positionMode = .normal
         view.mapView.isNightModeEnabled = true
         view.mapView.zoomLevel = 9
