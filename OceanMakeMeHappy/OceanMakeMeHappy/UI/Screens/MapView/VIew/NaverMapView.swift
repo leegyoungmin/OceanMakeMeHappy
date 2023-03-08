@@ -21,10 +21,6 @@ struct NaverMapView: UIViewRepresentable {
         
         configureMarker(with: mapViewModel.beachList, to: mapController)
         
-        mapController.mapView.touchDelegate = context.coordinator
-        mapController.mapView.addCameraDelegate(delegate: context.coordinator)
-        mapController.mapView.addOptionDelegate(delegate: context.coordinator)
-        
         return mapController
     }
     
@@ -66,20 +62,6 @@ struct NaverMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) { }
-    
-    class Coordinator: NSObject, NMFMapViewTouchDelegate, NMFMapViewCameraDelegate, NMFMapViewOptionDelegate {
-        func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
-            let cameraUpdate = NMFCameraUpdate(scrollTo: latlng, zoomTo: 15)
-            cameraUpdate.animation = .fly
-            cameraUpdate.animationDuration = 1
-            mapView.moveCamera(cameraUpdate)
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        return Coordinator()
-    }
-    
 }
 
 // MARK: Configure Naver Map
@@ -90,8 +72,9 @@ extension NaverMapView {
         view.showCompass = false
         view.showScaleBar = false
         view.showLocationButton = false
-        view.mapView.locale = "ko_KR"
         
+        view.mapView.locale = "ko_KR"
+        view.mapView.isZoomGestureEnabled = false
         view.mapView.positionMode = .normal
         view.mapView.isNightModeEnabled = true
         view.mapView.zoomLevel = 9

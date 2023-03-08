@@ -18,6 +18,7 @@ struct ContentView: View {
         NavigationView {
             ZStack {
                 NaverMapView(viewModel: MapViewModel())
+                    .edgesIgnoringSafeArea(.all)
                 
                 roundedTabBar()
             }
