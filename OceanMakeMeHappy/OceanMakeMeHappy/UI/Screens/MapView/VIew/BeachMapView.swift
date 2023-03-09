@@ -21,28 +21,15 @@ struct BeachMapView: View {
             VStack {
                 Spacer()
                 
-                HStack {
-                    Spacer()
-                    
-                    TabView(selection: $mapViewModel.selectedIndex) {
-                        ForEach(mapViewModel.beachList, id: \.num) { beach in
-                            ZStack {
-                                Color.accentColor
-                                
-                                Text(beach.name)
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                            .tag(beach.num)
+                ZStack {
+                    ForEach(mapViewModel.beachList, id: \.num) { beach in
+                        if mapViewModel.selectedIndex == beach.num {
+                            BeachPreviewView(beach: beach)
+                                .shadow(color: Color.gray.opacity(0.3), radius: 10)
+                                .padding()
+                                .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
                         }
-                        .padding(10)
                     }
-                    .frame(
-                        width: UIScreen.main.bounds.width,
-                        height: UIScreen.main.bounds.height * 0.2
-                    )
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    
-                    Spacer()
                 }
             }
         }
