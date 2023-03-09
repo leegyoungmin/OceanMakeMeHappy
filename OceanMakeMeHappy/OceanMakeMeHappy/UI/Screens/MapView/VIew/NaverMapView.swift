@@ -21,6 +21,12 @@ struct NaverMapView: UIViewRepresentable {
         
         configureMarker(with: mapViewModel.beachList, to: mapController)
         
+        guard let firstLocation = mapViewModel.locations.first else { return mapController }
+        
+        let defaultPosition = NMFCameraPosition(firstLocation, zoom: 9)
+        let cameraUpdate = NMFCameraUpdate(position: defaultPosition)
+        mapController.mapView.moveCamera(cameraUpdate)
+        
         return mapController
     }
     
@@ -42,7 +48,13 @@ struct NaverMapView: UIViewRepresentable {
     private func touchedMarker(marker overlay: NMFOverlay) -> Bool {
         guard let marker = overlay as? NMFMarker else { return false }
         
+        guard let beachInfo = marker.userInfo["beachInfo"] as? Beach else { return false }
+        
         resetRemainMarker(marker: marker)
+        
+        withAnimation {
+            mapViewModel.selectedIndex = beachInfo.num
+        }
         
         if marker.iconImage == NMF_MARKER_IMAGE_LIGHTBLUE { // UnSelected -> Selected
             withAnimation {
@@ -68,6 +80,7 @@ struct NaverMapView: UIViewRepresentable {
 extension NaverMapView {
     private func configureNaverMap() -> NMFNaverMapView {
         let view = NMFNaverMapView()
+        
         view.showZoomControls = false
         view.showCompass = false
         view.showScaleBar = false
@@ -85,7 +98,7 @@ extension NaverMapView {
         view.mapView.setLayerGroup(NMF_LAYER_GROUP_MOUNTAIN, isEnabled: true)
         view.mapView.symbolScale = 1
         
-        view.mapView.extent = NMGLatLngBounds(latLngs: mapViewModel.beachList.map { $0.location })
+        view.mapView.extent = NMGLatLngBounds(latLngs: mapViewModel.locations)
         
         return view
     }
@@ -99,10 +112,16 @@ extension NaverMapView {
             marker.captionText = $0.name
             marker.mapView = mapController.mapView
             marker.iconImage = NMF_MARKER_IMAGE_LIGHTBLUE
-            marker.userInfo = ["name": $0.name]
+            marker.userInfo = ["beachInfo": $0]
             marker.isHideCollidedCaptions = true
             marker.isHideCollidedSymbols = true
             marker.touchHandler = touchedMarker(marker:)
+            
+            if $0.num == 1 {
+                marker.height *= 2
+                marker.width *= 2
+                marker.iconImage = NMF_MARKER_IMAGE_BLUE
+            }
         }
     }
 }
