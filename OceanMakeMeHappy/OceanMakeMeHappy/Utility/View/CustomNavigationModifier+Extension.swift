@@ -35,9 +35,9 @@ struct CustomNavigationBarModifier<Center, Left, Right>: ViewModifier where Cent
                     
                     self.rightView?()
                 }
-                .frame(maxHeight: 25)
+                .frame(maxHeight: 20)
                 .frame(maxWidth: .infinity)
-                .padding(.horizontal, 16)
+                .padding(.horizontal)
                 
                 HStack {
                     Spacer()
@@ -47,8 +47,6 @@ struct CustomNavigationBarModifier<Center, Left, Right>: ViewModifier where Cent
                     Spacer()
                 }
             }
-            .padding(.horizontal, 5)
-            .padding(.bottom, 5)
             .background(barColor.ignoresSafeArea(.all, edges: .top))
             
             content

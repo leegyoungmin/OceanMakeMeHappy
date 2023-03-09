@@ -17,16 +17,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                NaverMapView(viewModel: MapViewModel())
-                    .edgesIgnoringSafeArea(.all)
-                
-                roundedTabBar()
+                BeachMapView()
             }
             .customNavigationBar(centerView: {
                 Image("IconImage")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
+                    .frame(maxWidth: 30, maxHeight: 30)
             })
         }
     }

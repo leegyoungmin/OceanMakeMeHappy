@@ -16,7 +16,7 @@ struct Beaches: Decodable {
 
 
 // MARK: - Item
-struct Beach: Decodable {
+struct Beach: Decodable, Hashable {
     let num: Int
     let name: String
     let location: NMGLatLng

@@ -9,6 +9,7 @@ import NMapsMap
 
 final class MapViewModel: ObservableObject {
     @Published var beachList = [Beach]()
+    @Published var selectedIndex: Int = 1
     var locations: [NMGLatLng] = []
     
     init() {
