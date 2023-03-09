@@ -41,7 +41,7 @@ struct BeachPreviewView: View {
 
 struct BeachPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        BeachPreviewView(beach: Beach(num: 1, name: "협재", longitude: 126.23994220041192, latitude: 33.394285064566915))
+        BeachPreviewView(beach: Beach(num: 1, name: "협재", address: "", longitude: 126.23994220041192, latitude: 33.394285064566915))
     }
 }
 
@@ -66,7 +66,7 @@ extension BeachPreviewView {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text(beach.location.description)
+            Text(beach.address)
                 .font(.subheadline)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

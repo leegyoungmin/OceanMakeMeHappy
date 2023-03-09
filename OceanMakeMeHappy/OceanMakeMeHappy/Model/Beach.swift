@@ -20,18 +20,20 @@ struct Beach: Decodable, Hashable {
     let num: Int
     let name: String
     let location: NMGLatLng
-    var address: String?
+    var address: String
     
     enum CodingKeys: CodingKey {
         case num
         case name
+        case address
         case longitude
         case latitude
     }
     
-    init(num: Int, name: String, longitude: Double, latitude: Double) {
+    init(num: Int, name: String, address: String, longitude: Double, latitude: Double) {
         self.num = num
         self.name = name
+        self.address = address
         self.location = NMGLatLng(lat: latitude, lng: longitude)
     }
     
@@ -39,6 +41,7 @@ struct Beach: Decodable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.num = try container.decode(Int.self, forKey: .num)
         self.name = try container.decode(String.self, forKey: .name)
+        self.address = try container.decode(String.self, forKey: .address)
         
         let longitude = try container.decode(Double.self, forKey: .longitude)
         let latitude = try container.decode(Double.self, forKey: .latitude)
