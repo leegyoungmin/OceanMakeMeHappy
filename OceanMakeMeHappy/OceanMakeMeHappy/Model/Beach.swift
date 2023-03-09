@@ -20,6 +20,7 @@ struct Beach: Decodable, Hashable {
     let num: Int
     let name: String
     let location: NMGLatLng
+    var address: String?
     
     enum CodingKeys: CodingKey {
         case num
