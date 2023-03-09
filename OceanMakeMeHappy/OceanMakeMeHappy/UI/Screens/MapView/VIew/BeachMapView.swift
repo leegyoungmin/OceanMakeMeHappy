@@ -25,9 +25,17 @@ struct BeachMapView: View {
                     ForEach(mapViewModel.beachList, id: \.num) { beach in
                         if mapViewModel.selectedIndex == beach.num {
                             BeachPreviewView(beach: beach)
-                                .shadow(color: Color.gray.opacity(0.3), radius: 10)
+                                .environmentObject(mapViewModel)
+                                .shadow(
+                                    color: Color.gray.opacity(0.3),
+                                    radius: 10
+                                )
                                 .padding()
-                                .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                                .transition(
+                                    .asymmetric(
+                                        insertion: .move(edge: .trailing), removal: .move(edge: .leading)
+                                    )
+                                )
                         }
                     }
                 }

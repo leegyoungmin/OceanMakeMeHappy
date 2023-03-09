@@ -28,6 +28,12 @@ struct Beach: Decodable, Hashable {
         case latitude
     }
     
+    init(num: Int, name: String, longitude: Double, latitude: Double) {
+        self.num = num
+        self.name = name
+        self.location = NMGLatLng(lat: latitude, lng: longitude)
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.num = try container.decode(Int.self, forKey: .num)

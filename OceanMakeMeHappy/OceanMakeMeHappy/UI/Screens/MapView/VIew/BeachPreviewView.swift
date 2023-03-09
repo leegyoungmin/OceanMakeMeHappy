@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct BeachPreviewView: View {
+    @EnvironmentObject var mapViewModel: MapViewModel
     private let beach: Beach
     
     init(beach: Beach) {
@@ -16,13 +17,16 @@ struct BeachPreviewView: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: 0) {
             VStack(alignment: .leading, spacing: 16) {
-                imageSection
+                HStack {
+                    imageSection
+                    
+                    Spacer()
+                    
+                    learnMoreButton
+                        .offset(y: 20)
+                }
+                
                 titleSection
-            }
-            
-            VStack {
-                learnMoreButton
-                nextButton
             }
         }
         .padding(20)
@@ -32,6 +36,12 @@ struct BeachPreviewView: View {
                 .offset(y: 65)
         )
         .cornerRadius(10)
+    }
+}
+
+struct BeachPreviewView_Previews: PreviewProvider {
+    static var previews: some View {
+        BeachPreviewView(beach: Beach(num: 1, name: "협재", longitude: 126.23994220041192, latitude: 33.394285064566915))
     }
 }
 
@@ -64,7 +74,7 @@ extension BeachPreviewView {
     
     private var learnMoreButton: some View {
         Button {
-            
+            // TODO: - 사진 보러가는 기능 만들기
         } label: {
             Text("더보기")
                 .font(.headline)
@@ -73,18 +83,5 @@ extension BeachPreviewView {
         .background(Color.accentColor)
         .cornerRadius(10)
         .foregroundColor(.white)
-    }
-    
-    private var nextButton: some View {
-        Button {
-            
-        } label: {
-            Text("다음")
-                .font(.headline)
-                .frame(width: 125, height: 35)
-        }
-        .background(Color.accentColor.opacity(0.2))
-        .cornerRadius(10)
-        .foregroundColor(Color.accentColor)
     }
 }
