@@ -36,6 +36,9 @@ struct BeachPreviewView: View {
                 .offset(y: 65)
         )
         .cornerRadius(10)
+        .onAppear {
+            
+        }
     }
 }
 
