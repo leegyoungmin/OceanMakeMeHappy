@@ -7,12 +7,8 @@
 import Combine
 import Foundation
 
-struct BeachInformation: Decodable {
-    
-}
-
 protocol BeachInformationWebRepository: WebRepository {
-    func loadInformation() -> AnyPublisher<BeachInformation, Error>
+    func loadInformation() -> AnyPublisher<BeachInformationResponse, Error>
 }
 
 struct RealBeachInformationWebRepository: BeachInformationWebRepository {
@@ -26,7 +22,7 @@ struct RealBeachInformationWebRepository: BeachInformationWebRepository {
         self.baseURL = baseURL
     }
     
-    func loadInformation() -> AnyPublisher<BeachInformation, Error> {
+    func loadInformation() -> AnyPublisher<BeachInformationResponse, Error> {
         return load(endPoint: API.beachInformation(contentId))
     }
 }

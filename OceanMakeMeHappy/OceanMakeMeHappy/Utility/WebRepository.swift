@@ -47,6 +47,8 @@ extension APICall {
             throw APIError.invalidURL
         }
         
+        components.path = path
+        
         if let queries = queries {
             components.queryItems = queries.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
@@ -73,7 +75,7 @@ extension WebRepository {
                 guard let code = (response as? HTTPURLResponse)?.statusCode else {
                     throw APIError.unExpectedResponse
                 }
-                guard (200...300) ~= code else {
+                guard (200..<300) ~= code else {
                     throw APIError.httpCode(code)
                 }
                 return data
