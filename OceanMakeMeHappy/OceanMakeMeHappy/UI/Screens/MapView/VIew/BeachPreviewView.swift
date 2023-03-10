@@ -7,11 +7,20 @@
 import SwiftUI
 
 struct BeachPreviewView: View {
+    @StateObject var previewViewModel: MapPreviewViewModel
     @EnvironmentObject var mapViewModel: MapViewModel
     private let beach: Beach
     
     init(beach: Beach) {
         self.beach = beach
+        _previewViewModel = StateObject(
+            wrappedValue: MapPreviewViewModel(
+                contentId: beach.contentId ?? "",
+                service: RealBeachInformationService(
+                    webService: RealBeachInformationWebRepository()
+                )
+            )
+        )
     }
      
     var body: some View {
@@ -69,7 +78,7 @@ extension BeachPreviewView {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text(beach.address)
+            Text(previewViewModel.information?.address ?? beach.address)
                 .font(.subheadline)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
