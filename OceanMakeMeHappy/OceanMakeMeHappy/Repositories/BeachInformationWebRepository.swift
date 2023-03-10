@@ -8,21 +8,19 @@ import Combine
 import Foundation
 
 protocol BeachInformationWebRepository: WebRepository {
-    func loadInformation() -> AnyPublisher<BeachInformationResponse, Error>
+    func loadInformation(contentId: String) -> AnyPublisher<BeachInformationResponse, Error>
 }
 
 struct RealBeachInformationWebRepository: BeachInformationWebRepository {
-    private let contentId: String
     var session: URLSession
     var baseURL: String
     
-    init(contentId: String, session: URLSession = URLSession.shared, baseURL: String = "http://api.visitjeju.net") {
-        self.contentId = contentId
+    init(session: URLSession = URLSession.shared, baseURL: String = "http://api.visitjeju.net") {
         self.session = session
         self.baseURL = baseURL
     }
     
-    func loadInformation() -> AnyPublisher<BeachInformationResponse, Error> {
+    func loadInformation(contentId: String) -> AnyPublisher<BeachInformationResponse, Error> {
         return load(endPoint: API.beachInformation(contentId))
     }
 }
