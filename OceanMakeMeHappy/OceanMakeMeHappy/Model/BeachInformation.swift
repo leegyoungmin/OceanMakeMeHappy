@@ -4,6 +4,8 @@
 //
 //  Copyright (c) 2023 Minii All rights reserved.
 
+import Foundation
+
 // MARK: - BeachInformation
 struct BeachInformationResponse: Codable {
     let items: [BeachInformation]
@@ -20,6 +22,9 @@ struct BeachInformation: Codable {
     let contentsid, address, roadaddress: String
     let introduction: String
     let photoInformation: PhotoInformation
+    var thumbnailPath: URL? {
+        return URL(string: photoInformation.photoPaths.thumbnailPath)
+    }
     
     enum CodingKeys: String, CodingKey {
         case alltag
