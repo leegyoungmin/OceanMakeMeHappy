@@ -18,7 +18,8 @@ struct BeachPreviewView: View {
                 contentId: beach.contentId ?? "",
                 service: RealBeachInformationService(
                     webService: RealBeachInformationWebRepository()
-                )
+                ),
+                imageService: RealImageService()
             )
         )
     }
@@ -60,16 +61,16 @@ struct BeachPreviewView_Previews: PreviewProvider {
 extension BeachPreviewView {
     private var imageSection: some View {
         ZStack {
-            Image(systemName: "person")
+            previewViewModel.beachImage
                 .resizable()
                 .scaledToFill()
-                .background(Color.accentColor)
                 .frame(width: 100, height: 100)
-                .cornerRadius(10)
+                .cornerRadius(6)
         }
         .padding(6)
         .background(Color.white)
         .cornerRadius(10)
+        .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
     }
     
     private var titleSection: some View {
