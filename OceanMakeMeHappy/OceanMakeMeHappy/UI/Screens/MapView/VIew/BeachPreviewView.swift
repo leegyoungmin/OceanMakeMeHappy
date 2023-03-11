@@ -87,7 +87,8 @@ extension BeachPreviewView {
     
     private var learnMoreButton: some View {
         Button {
-            // TODO: - 사진 보러가는 기능 만들기
+            mapViewModel.selectDetailItem(with: previewViewModel.information)
+            mapViewModel.isPresentDetail.toggle()
         } label: {
             Text("더보기")
                 .font(.headline)
