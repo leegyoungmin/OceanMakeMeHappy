@@ -24,22 +24,21 @@ struct BeachInformationView: View {
             
             Color.white
                 .opacity(1 - visibleRatio)
-            
-            headerTitle
-                .foregroundColor(.white)
-                .shadow(color: .black.opacity(0.4), radius: 1, x: 1, y: 1)
         }
     }
     
     var headerTitle: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(viewModel.beach.name)
-                .font(.largeTitle)
-                .fontWeight(.semibold)
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(viewModel.beach.name)
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                
+                Text(viewModel.beach.address)
+            }
             
-            Text(viewModel.beach.address)
+            Spacer()
         }
-        .padding(20)
         .opacity(visibleRatio)
     }
     
@@ -49,10 +48,30 @@ struct BeachInformationView: View {
             headerHeight: 250,
             onScroll: handleOffset
         ) {
-            ForEach($viewModel.information.alltag, id: \.self) {
-                Text($0.wrappedValue)
-                Text($0.wrappedValue)
+            
+            VStack(alignment: .leading) {
+                headerTitle
+                    .foregroundColor(.black)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack {
+                        ForEach($viewModel.information.alltag, id: \.self) {
+                            Text("# " + $0.wrappedValue)
+                                .font(.headline)
+                                .fontWeight(.thin)
+                        }
+                    }
+                    .padding(10)
+                }
+                .background(Material.thin)
+                .cornerRadius(6)
+                .frame(maxHeight: 44)
+                
+                Text(viewModel.information.introduction)
+                    .font(.headline)
+                    .padding(.vertical)
             }
+            .padding(10)
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
