@@ -21,6 +21,9 @@ struct BeachInformationView: View {
         ZStack(alignment: .bottomLeading) {
             ScrollViewHeaderImage(viewModel.mainImage)
                 .opacity(visibleRatio)
+            
+            Color.white
+                .opacity(1 - visibleRatio)
         }
     }
     
@@ -44,44 +47,77 @@ struct BeachInformationView: View {
             headerHeight: 250,
             onScroll: handleOffset
         ) {
-            
             VStack(alignment: .leading) {
                 headerTitle
                     .foregroundColor(.black)
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack {
-                        ForEach($viewModel.information.alltag, id: \.self) {
-                            Text("# " + $0.wrappedValue)
-                                .font(.headline)
-                                .fontWeight(.thin)
+                if viewModel.information.alltag.isEmpty == false {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack {
+                            ForEach($viewModel.information.alltag, id: \.self) {
+                                Text("# " + $0.wrappedValue)
+                                    .font(.headline)
+                                    .fontWeight(.thin)
+                            }
                         }
+                        .padding(10)
                     }
-                    .padding(10)
-                }
-                .background(Material.thin)
-                .cornerRadius(6)
-                .frame(maxHeight: 44)
-                
-                Text(viewModel.information.introduction)
-                    .font(.headline)
-                    .padding(.vertical)
-                
-                if let description = viewModel.beach.description {
-                    Text(description)
-                }
-                
-                if let url = URL(string: "nmap://search?query=\(viewModel.beach.name.encodeURL() ?? "")&appname=com.minii.OceanMakeMeHappy") {
-                    GroupBox {
-                        Link(destination: url) {
-                            Text("네이버지도로 검색하기")
-                        }
-                    } label: {
-                        Image(systemName: "network")
-                    }
+                    .background(Material.thin)
+                    .cornerRadius(6)
+                    .frame(maxHeight: 44)
                 }
             }
-            .padding(10)
+            .padding()
+            
+            Text(viewModel.information.introduction)
+                .font(.headline)
+                .padding()
+            
+            if let description = viewModel.beach.description {
+                Text(description)
+                    .padding()
+            }
+            
+            if let url = URL.generateNaverMapSearch(with: viewModel.beach.name) {
+                GroupBox {
+                    HStack {
+                        Image(systemName: "globe")
+                        Text("네이버 지도에서 보기")
+                        
+                        Spacer()
+                        
+                        Group {
+                            Image(systemName: "arrow.up.right.square")
+                            
+                            Link(viewModel.beach.name, destination: url)
+                        }
+                    }
+                }
+                .padding([.top,.horizontal])
+            }
+            
+            if let url = URL.generateJejuSearch(with: viewModel.information.contentsid) {
+                GroupBox {
+                    HStack {
+                        Image(systemName: "globe")
+                        Text("자료 출처")
+                        
+                        Spacer()
+                        
+                        Group {
+                            Image(systemName: "arrow.up.right.square")
+                            
+                            Link("VISIT JEJU", destination: url)
+                        }
+                    }
+                }
+                .padding([.top,.horizontal])
+            }
+        }.toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(viewModel.beach.name)
+                    .font(.headline)
+                    .opacity(1 - visibleRatio)
+            }
         }
     }
 }
