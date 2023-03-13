@@ -5,67 +5,75 @@
 //  Copyright (c) 2023 Minii All rights reserved.
 
 import SwiftUI
+import DSScrollKit
 
 struct BeachInformationView: View {
     @StateObject var viewModel: BeachInformationViewModel
-    var body: some View {
-        ScrollView {
-            StickyHeader {
-                ZStack {
-                    Color.red
-                }
-            }
+    @State var offset: CGPoint = .zero
+    @State var visibleRatio: CGFloat = .zero
+    
+    func handleOffset(_ scrollOffset: CGPoint, visibleRatio: CGFloat) {
+        self.offset = scrollOffset
+        self.visibleRatio = visibleRatio
+    }
+    
+    func header() -> some View {
+        ZStack(alignment: .bottomLeading) {
+            ScrollViewHeaderImage(viewModel.mainImage)
+                .opacity(visibleRatio)
             
+            Color.white
+                .opacity(1 - visibleRatio)
+            
+            headerTitle
+                .foregroundColor(.white)
+                .shadow(color: .black.opacity(0.4), radius: 1, x: 1, y: 1)
+        }
+    }
+    
+    var headerTitle: some View {
+        VStack(alignment: .leading, spacing: 8) {
             Text(viewModel.beach.name)
+                .font(.largeTitle)
+                .fontWeight(.semibold)
             
+            Text(viewModel.beach.address)
+        }
+        .padding(20)
+        .opacity(visibleRatio)
+    }
+    
+    var body: some View {
+        ScrollViewWithStickyHeader(
+            header: header,
+            headerHeight: 250,
+            onScroll: handleOffset
+        ) {
             ForEach($viewModel.information.alltag, id: \.self) {
                 Text($0.wrappedValue)
+                Text($0.wrappedValue)
             }
-            
-            
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(viewModel.beach.name)
+                    .font(.headline)
+                    .foregroundColor(.accentColor)
+                    .shadow(color: .white.opacity(0.4), radius: 1, x: 1, y: 1)
+                    .opacity(1 - visibleRatio)
+            }
         }
     }
 }
 
-
-
-
-struct StickyHeader<Content: View>: View {
-    var minHeight: CGFloat
-    var content: Content
-    
-    init(minHeight: CGFloat = 200, @ViewBuilder content: () -> Content) {
-        self.minHeight = minHeight
-        self.content = content()
-    }
-    
-    var body: some View {
-        GeometryReader { geometry in
-            if geometry.frame(in: .global).minY <= .zero {
-                content
-                    .frame(
-                        width: geometry.size.width,
-                        height: geometry.size.height,
-                        alignment: .center
-                    )
-            } else {
-                content
-                    .offset(y: -geometry.frame(in: .global).minY)
-                    .frame(width: geometry.size.width, height: geometry.frame(in: .global).minY + geometry.size.height)
-            }
-        }
-        .frame(minHeight: minHeight)
+struct BeachInformationView_Previews: PreviewProvider {
+    static let viewModel = BeachInformationViewModel(
+        beach: Beach.mockBeach,
+        information: BeachInformation.mockBeachInformation
+    )
+    static var previews: some View {
+        BeachInformationView(viewModel: viewModel)
     }
 }
-
-//struct BeachInformationView_Previews: PreviewProvider {
-//    static let viewModel = BeachInformationViewModel(
-//        beach: Beach.mockBeach,
-//        information: BeachInformation.mockBeachInformation
-//    )
-//    static var previews: some View {
-//        BeachInformationView(viewModel: viewModel)
-//    }
-//}
 
 
