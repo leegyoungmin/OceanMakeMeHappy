@@ -21,9 +21,6 @@ struct BeachInformationView: View {
         ZStack(alignment: .bottomLeading) {
             ScrollViewHeaderImage(viewModel.mainImage)
                 .opacity(visibleRatio)
-            
-            Color.white
-                .opacity(1 - visibleRatio)
         }
     }
     
@@ -39,7 +36,6 @@ struct BeachInformationView: View {
             
             Spacer()
         }
-        .opacity(visibleRatio)
     }
     
     var body: some View {
@@ -70,17 +66,22 @@ struct BeachInformationView: View {
                 Text(viewModel.information.introduction)
                     .font(.headline)
                     .padding(.vertical)
+                
+                if let description = viewModel.beach.description {
+                    Text(description)
+                }
+                
+                if let url = URL(string: "nmap://search?query=\(viewModel.beach.name.encodeURL() ?? "")&appname=com.minii.OceanMakeMeHappy") {
+                    GroupBox {
+                        Link(destination: url) {
+                            Text("네이버지도로 검색하기")
+                        }
+                    } label: {
+                        Image(systemName: "network")
+                    }
+                }
             }
             .padding(10)
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(viewModel.beach.name)
-                    .font(.headline)
-                    .foregroundColor(.accentColor)
-                    .shadow(color: .white.opacity(0.4), radius: 1, x: 1, y: 1)
-                    .opacity(1 - visibleRatio)
-            }
         }
     }
 }

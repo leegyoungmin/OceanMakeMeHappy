@@ -22,6 +22,7 @@ struct Beach: Decodable, Hashable {
     let location: NMGLatLng
     let address: String
     let contentId: String?
+    let description: String?
     
     enum CodingKeys: CodingKey {
         case num
@@ -30,14 +31,16 @@ struct Beach: Decodable, Hashable {
         case longitude
         case latitude
         case contentId
+        case description
     }
     
-    init(num: Int, name: String, address: String, longitude: Double, latitude: Double, contentId: String? = nil) {
+    init(num: Int, name: String, address: String, longitude: Double, latitude: Double, contentId: String? = nil, description: String? = nil) {
         self.num = num
         self.name = name
         self.address = address
         self.location = NMGLatLng(lat: latitude, lng: longitude)
         self.contentId = contentId
+        self.description = description
     }
     
     init(from decoder: Decoder) throws {
@@ -46,6 +49,7 @@ struct Beach: Decodable, Hashable {
         self.name = try container.decode(String.self, forKey: .name)
         self.address = try container.decode(String.self, forKey: .address)
         self.contentId = try? container.decode(String.self, forKey: .contentId)
+        self.description = try? container.decode(String.self, forKey: .description)
         
         let longitude = try container.decode(Double.self, forKey: .longitude)
         let latitude = try container.decode(Double.self, forKey: .latitude)
