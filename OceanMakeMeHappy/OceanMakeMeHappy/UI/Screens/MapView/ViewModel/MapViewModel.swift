@@ -25,7 +25,7 @@ final class MapViewModel: ObservableObject {
     }
     
     func selectDetailItem(with information: BeachInformation?) {
-        self.detailBeach = beachList[selectedIndex]
+        self.detailBeach = beachList[selectedIndex - 1]
         self.detailInformation = information
     }
 }

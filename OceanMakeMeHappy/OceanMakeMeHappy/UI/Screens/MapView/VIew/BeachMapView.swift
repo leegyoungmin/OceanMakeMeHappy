@@ -17,9 +17,8 @@ struct BeachMapView: View {
         ZStack {
             ZStack {
                 NavigationLink(isActive: $mapViewModel.isPresentDetail) {
-                    if let detailBeach = mapViewModel.detailBeach,
-                       let detailInformation = mapViewModel.detailInformation {
-                        let viewModel = BeachInformationViewModel(beach: detailBeach, information: detailInformation)
+                    if let detailBeach = mapViewModel.detailBeach {
+                        let viewModel = BeachInformationViewModel(beach: detailBeach, information: mapViewModel.detailInformation)
                         
                         BeachInformationView(viewModel: viewModel)
                     }
