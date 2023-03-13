@@ -21,9 +21,19 @@ struct BeachInformation: Codable, Hashable {
     var alltag: [String]
     let contentsid, address, roadaddress: String
     let introduction: String
-    let photoInformation: PhotoInformation
+    var photoInformation: PhotoInformation? = nil
     var thumbnailPath: URL? {
-        return URL(string: photoInformation.photoPaths.thumbnailPath)
+        guard let path = photoInformation?.photoPaths.thumbnailPath else {
+            return nil
+        }
+        return URL(string: path)
+    }
+    
+    var imagePath: URL? {
+        guard let path = photoInformation?.photoPaths.imagePath else {
+            return nil
+        }
+        return URL(string: path)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -35,7 +45,7 @@ struct BeachInformation: Codable, Hashable {
         case photoInformation = "repPhoto"
     }
     
-    init(alltag: [String], contentsid: String, address: String, roadaddress: String, introduction: String, photoInformation: PhotoInformation) {
+    init(alltag: [String], contentsid: String, address: String, roadaddress: String, introduction: String, photoInformation: PhotoInformation? = nil) {
         self.alltag = alltag
         self.contentsid = contentsid
         self.address = address
