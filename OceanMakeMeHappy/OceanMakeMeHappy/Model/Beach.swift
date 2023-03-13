@@ -53,3 +53,9 @@ struct Beach: Decodable, Hashable {
         self.location = NMGLatLng(lat: latitude, lng: longitude)
     }
 }
+
+extension Beach {
+    static var mockBeach: Self {
+        return Beach(num: 1, name: "함덕해수욕장", address: "제주특별자치도 제주시 조천읍 함덕리", longitude: 126.66971744987154, latitude: 33.54311160440626)
+    }
+}
