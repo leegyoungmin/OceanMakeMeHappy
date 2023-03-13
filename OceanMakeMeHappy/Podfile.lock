@@ -1,20 +1,24 @@
 PODS:
+  - DSScrollKit (0.2.0)
   - NMapsGeometry (1.0.1)
   - NMapsMap (3.16.2):
     - NMapsGeometry
 
 DEPENDENCIES:
+  - DSScrollKit
   - NMapsMap
 
 SPEC REPOS:
   trunk:
+    - DSScrollKit
     - NMapsGeometry
     - NMapsMap
 
 SPEC CHECKSUMS:
+  DSScrollKit: 3c0608814d82cddf451b1534a1d7038349243cf2
   NMapsGeometry: 53c573ead66466681cf123f99f698dc8071a4b83
   NMapsMap: aaa64717249b06ae82c3a3addb3a01f0e33100ab
 
-PODFILE CHECKSUM: df1a559349ff709c5057f636eb58641a0df0ae1f
+PODFILE CHECKSUM: 32afa3b923ca0143e490b87ed359080504d7358e
 
 COCOAPODS: 1.12.0

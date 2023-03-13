@@ -7,4 +7,5 @@ target 'OceanMakeMeHappy' do
 
   # Pods for OceanMakeMeHappy
   pod 'NMapsMap'
+  pod 'DSScrollKit'
 end
