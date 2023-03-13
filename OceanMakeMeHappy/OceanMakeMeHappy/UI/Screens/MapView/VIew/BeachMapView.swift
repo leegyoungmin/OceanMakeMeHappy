@@ -15,9 +15,23 @@ struct BeachMapView: View {
     
     var body: some View {
         ZStack {
-            NaverMapView(viewModel: mapViewModel)
-                .edgesIgnoringSafeArea(.all)
+            ZStack {
+                NavigationLink(isActive: $mapViewModel.isPresentDetail) {
+                    if let detailBeach = mapViewModel.detailBeach,
+                       let detailInformation = mapViewModel.detailInformation {
+                        let viewModel = BeachInformationViewModel(beach: detailBeach, information: detailInformation)
+                        
+                        BeachInformationView(viewModel: viewModel)
+                    }
+                } label: {
+                    EmptyView()
+                }
+            }
             
+            NaverMapView()
+                .environmentObject(mapViewModel)
+                .edgesIgnoringSafeArea(.all)
+
             VStack {
                 Spacer()
                 

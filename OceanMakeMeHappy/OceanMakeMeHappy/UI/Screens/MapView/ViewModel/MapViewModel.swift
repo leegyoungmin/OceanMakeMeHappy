@@ -11,7 +11,8 @@ final class MapViewModel: ObservableObject {
     @Published var beachList = [Beach]()
     @Published var selectedIndex: Int = 1
     @Published var isPresentDetail: Bool = false
-    @Published var detailItem: BeachInformation?
+    @Published var detailBeach: Beach?
+    @Published var detailInformation: BeachInformation?
     
     var locations: [NMGLatLng] = []
     private var cancellables = Set<AnyCancellable>()
@@ -24,6 +25,7 @@ final class MapViewModel: ObservableObject {
     }
     
     func selectDetailItem(with information: BeachInformation?) {
-        self.detailItem = information
+        self.detailBeach = beachList[selectedIndex]
+        self.detailInformation = information
     }
 }
