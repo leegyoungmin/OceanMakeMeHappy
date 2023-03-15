@@ -59,7 +59,7 @@ extension BeachPreviewCardView {
             WithViewStore(self.store.scope(state: \.information)) { information in
                 AsyncImage(
                     url: information.state?.thumbnailPath,
-                    transaction: Transaction(animation: .default)
+                    transaction: Transaction(animation: .easeInOut(duration: 0.5))
                 ) { phase in
                     switch phase {
                     case .success(let image):
@@ -68,12 +68,17 @@ extension BeachPreviewCardView {
                             .scaledToFill()
                             .frame(width: 100, height: 100, alignment: .center)
                             .cornerRadius(6)
-                    @unknown default:
+                    case .empty:
                         Image("IconImage")
                             .resizable()
                             .scaledToFill()
                             .frame(width: 100, height: 100, alignment: .center)
                             .cornerRadius(6)
+                        
+                    case .failure:
+                        ProgressView()
+                    @unknown default:
+                        ProgressView()
                     }
                 }
             }
