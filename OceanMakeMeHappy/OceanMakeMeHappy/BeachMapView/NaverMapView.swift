@@ -4,20 +4,23 @@
 //
 //  Copyright (c) 2023 Minii All rights reserved.
 
-import Combine
-import SwiftUI
+import ComposableArchitecture
 import NMapsMap
+import SwiftUI
 
 struct NaverMapView: UIViewRepresentable {
-    private var subscribers = Set<AnyCancellable>()
-    @EnvironmentObject var mapViewModel: MapViewModel
+    let viewStore: ViewStoreOf<BeachMapStore>
+    
+    init(store: StoreOf<BeachMapStore>) {
+        self.viewStore = ViewStore(store)
+    }
     
     func makeUIView(context: Context) -> NMFNaverMapView {
         let mapController = configureNaverMap()
         
-        configureMarker(with: mapViewModel.beachList, to: mapController)
+        configureMarker(with: viewStore.beachList, to: mapController)
         
-        guard let firstLocation = mapViewModel.locations.first else { return mapController }
+        guard let firstLocation = viewStore.locations.first else { return mapController }
         
         let defaultPosition = NMFCameraPosition(firstLocation, zoom: 9)
         let cameraUpdate = NMFCameraUpdate(position: defaultPosition)
@@ -29,7 +32,7 @@ struct NaverMapView: UIViewRepresentable {
     private func resetRemainMarker(marker: NMFMarker) {
         let mapView = marker.mapView
         
-        mapViewModel.locations.filter { $0 != marker.position }.forEach {
+        viewStore.locations.filter { $0 != marker.position }.forEach {
             guard let point = mapView?.projection.point(from: $0) else { return }
             guard let markers = mapView?.pickAll(point, withTolerance: 2) as? [NMFMarker] else { return }
             
@@ -48,9 +51,7 @@ struct NaverMapView: UIViewRepresentable {
         
         resetRemainMarker(marker: marker)
         
-        withAnimation {
-            mapViewModel.selectedIndex = beachInfo.num
-        }
+        viewStore.send(.selectBeach(index: beachInfo.num))
         
         if marker.iconImage == NMF_MARKER_IMAGE_LIGHTBLUE { // UnSelected -> Selected
             withAnimation {
@@ -94,13 +95,13 @@ extension NaverMapView {
         view.mapView.setLayerGroup(NMF_LAYER_GROUP_MOUNTAIN, isEnabled: true)
         view.mapView.symbolScale = 1
         
-        view.mapView.extent = NMGLatLngBounds(latLngs: mapViewModel.locations)
+        view.mapView.extent = NMGLatLngBounds(latLngs: viewStore.locations)
         
         return view
     }
     
     private func configureMarker(with beaches: [Beach], to mapController: NMFNaverMapView) {
-        mapViewModel.beachList.forEach {
+        viewStore.beachList.forEach {
             let location = $0.location
             let marker = NMFMarker(position: location)
             marker.width = 16

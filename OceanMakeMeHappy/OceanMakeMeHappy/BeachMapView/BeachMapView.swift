@@ -27,7 +27,7 @@ struct BeachMapView: View {
                 }
             }
             
-            NaverMapView()
+            NaverMapView(beachList: mapViewModel.beachList)
                 .environmentObject(mapViewModel)
                 .edgesIgnoringSafeArea(.all)
 
