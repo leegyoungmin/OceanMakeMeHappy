@@ -10,11 +10,7 @@ import NMapsMap
 
 struct NaverMapView: UIViewRepresentable {
     private var subscribers = Set<AnyCancellable>()
-    @StateObject var mapViewModel: MapViewModel
-    
-    init(viewModel: MapViewModel) {
-        _mapViewModel = StateObject(wrappedValue: viewModel)
-    }
+    @EnvironmentObject var mapViewModel: MapViewModel
     
     func makeUIView(context: Context) -> NMFNaverMapView {
         let mapController = configureNaverMap()
