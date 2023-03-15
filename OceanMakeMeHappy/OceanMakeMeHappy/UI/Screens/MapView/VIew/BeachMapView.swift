@@ -37,7 +37,7 @@ struct BeachMapView: View {
                 ZStack {
                     ForEach(mapViewModel.beachList, id: \.num) { beach in
                         if mapViewModel.selectedIndex == beach.num {
-                            BeachPreviewView(beach: beach)
+                            BeachPreviewCardView(beach: beach)
                                 .environmentObject(mapViewModel)
                                 .shadow(
                                     color: Color.gray.opacity(0.3),
