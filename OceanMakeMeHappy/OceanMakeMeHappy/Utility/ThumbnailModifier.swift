@@ -7,15 +7,18 @@
 import SwiftUI
 
 struct ThumbnailImageModifier: ViewModifier {
+    var width: CGFloat
+    var height: CGFloat
+    
     func body(content: Content) -> some View {
         content
-            .frame(width: 100, height: 100, alignment: .center)
+            .frame(width: width, height: height, alignment: .center)
             .cornerRadius(6)
     }
 }
 
 extension View {
-    func thumbnailStyle() -> some View {
-        modifier(ThumbnailImageModifier())
+    func thumbnailStyle(size: CGSize = CGSize(width: 100, height: 100)) -> some View {
+        modifier(ThumbnailImageModifier(width: size.width, height: size.height))
     }
 }

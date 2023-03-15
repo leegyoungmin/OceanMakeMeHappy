@@ -68,29 +68,22 @@ private extension BeachPreviewCardView {
     var imageSection: some View {
         ZStack {
             WithViewStore(self.store.scope(state: \.information)) { information in
-                if let url = information.state?.thumbnailPath {
-                    AsyncImage(
-                        url: url,
-                        transaction: Transaction(
-                            animation: .easeInOut(duration: 0.5)
-                        )
-                    ) { phase in
-                        if let image = phase.image {
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .thumbnailStyle()
-                            
-                        } else if phase.error != nil {
-                            defaultIconImage
-                        } else {
-                            ProgressView().thumbnailStyle()
-                        }
+                AsyncImage(
+                    url: information.state?.thumbnailPath,
+                    transaction: Transaction(
+                        animation: .easeInOut(duration: 0.5)
+                    )
+                ) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .thumbnailStyle()
+                        
+                    } else {
+                        defaultIconImage
                     }
-                } else {
-                    defaultIconImage
                 }
-                
             }
         }
         .padding(6)
