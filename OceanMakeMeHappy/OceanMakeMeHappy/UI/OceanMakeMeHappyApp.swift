@@ -12,7 +12,9 @@ import NMapsMap
 struct OceanMakeMeHappyApp: App {
     
     init() {
-        NMFAuthManager.shared().clientId = "m7udxzf586"
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "NMFClientId") as? String {
+            NMFAuthManager.shared().clientId = apiKey
+        }
     }
     
     var body: some Scene {

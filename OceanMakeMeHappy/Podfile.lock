@@ -1,5 +1,5 @@
 PODS:
-  - DSScrollKit (0.2.0)
+  - DSScrollKit (0.3.0)
   - NMapsGeometry (1.0.1)
   - NMapsMap (3.16.2):
     - NMapsGeometry
@@ -15,7 +15,7 @@ SPEC REPOS:
     - NMapsMap
 
 SPEC CHECKSUMS:
-  DSScrollKit: 3c0608814d82cddf451b1534a1d7038349243cf2
+  DSScrollKit: 08223f2a7497b70d041b37a1b445e537de5da48f
   NMapsGeometry: 53c573ead66466681cf123f99f698dc8071a4b83
   NMapsMap: aaa64717249b06ae82c3a3addb3a01f0e33100ab
 
