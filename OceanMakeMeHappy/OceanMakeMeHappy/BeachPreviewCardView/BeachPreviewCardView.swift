@@ -47,40 +47,50 @@ struct BeachPreviewCardView: View {
     }
 }
 
-struct BeachPreviewView_Previews: PreviewProvider {
+struct BeachPreviewCardView_Previews: PreviewProvider {
+    static let beach = Beach.mockBeach
     static var previews: some View {
-        BeachPreviewCardView(beach: Beach(num: 1, name: "협재", address: "", longitude: 126.23994220041192, latitude: 33.394285064566915))
+        BeachPreviewCardView(beach: beach)
+            .previewLayout(.sizeThatFits)
+            .padding()
     }
 }
 
-extension BeachPreviewCardView {
-    private var imageSection: some View {
+// MARK: - Child View Components
+private extension BeachPreviewCardView {
+    var defaultIconImage: some View {
+        return Image("IconImage")
+            .resizable()
+            .scaledToFill()
+            .thumbnailStyle()
+    }
+    
+    var imageSection: some View {
         ZStack {
             WithViewStore(self.store.scope(state: \.information)) { information in
-                AsyncImage(
-                    url: information.state?.thumbnailPath,
-                    transaction: Transaction(animation: .easeInOut(duration: 0.5))
-                ) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 100, height: 100, alignment: .center)
-                            .cornerRadius(6)
-                    case .empty:
-                        Image("IconImage")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 100, height: 100, alignment: .center)
-                            .cornerRadius(6)
-                        
-                    case .failure:
-                        ProgressView()
-                    @unknown default:
-                        ProgressView()
+                if let url = information.state?.thumbnailPath {
+                    AsyncImage(
+                        url: url,
+                        transaction: Transaction(
+                            animation: .easeInOut(duration: 0.5)
+                        )
+                    ) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .thumbnailStyle()
+                            
+                        } else if phase.error != nil {
+                            defaultIconImage
+                        } else {
+                            ProgressView().thumbnailStyle()
+                        }
                     }
+                } else {
+                    defaultIconImage
                 }
+                
             }
         }
         .padding(6)
@@ -89,7 +99,7 @@ extension BeachPreviewCardView {
         .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
     }
     
-    private var titleSection: some View {
+    var titleSection: some View {
         VStack(alignment: .leading, spacing: 4) {
             WithViewStore(self.store.scope(state: \.beach)) { beach in
                 Text(beach.name)
@@ -103,7 +113,7 @@ extension BeachPreviewCardView {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private var learnMoreButton: some View {
+    var learnMoreButton: some View {
         Button {
             // TODO: - Navigate Button Action 추가하기
         } label: {
