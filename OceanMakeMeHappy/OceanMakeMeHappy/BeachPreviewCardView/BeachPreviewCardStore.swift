@@ -37,9 +37,6 @@ struct BeachPreviewCardStore: ReducerProtocol {
             case ._requestResponse(.failure):
                 state.information = nil
                 return .none
-                
-            default:
-                return .none
             }
         }
     }
