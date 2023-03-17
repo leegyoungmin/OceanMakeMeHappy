@@ -18,7 +18,7 @@
 ## 🛠 기능 소개
 |사용자 맵 화면|사용자 맵 이벤트 반응|
 |---|---|
-|<img src="../OceanMakeMeHappy/Previews/MapPreview.PNG" width = 180>|<img src="../OceanMakeMeHappy/Previews/MapPreview.gif" width=180>|
+|<img src="Previews/MapPreview.PNG" width = 180>|<img src="Previews/MapPreview.gif" width=180>|
 
 ## 🤔 고민한 점
 ### 아키텍쳐에 대한 고민
