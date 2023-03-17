@@ -25,10 +25,7 @@ struct NaverMapStore: ReducerProtocol {
     var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
-            case .selectBeach(let index):
-                return .none
-                
-            default:
+            case .selectBeach:
                 return .none
             }
         }

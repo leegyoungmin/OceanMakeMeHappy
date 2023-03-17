@@ -42,7 +42,7 @@ struct BeachMapStore: ReducerProtocol {
                 state.mapStore = NaverMapStore.State(beachList: response)
                 return .none
                 
-            case let .loadLocalResponse(.failure):
+            case .loadLocalResponse(.failure):
                 return .none
             }
         }

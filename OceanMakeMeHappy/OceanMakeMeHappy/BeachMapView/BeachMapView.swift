@@ -4,62 +4,71 @@
 //
 //  Copyright (c) 2023 Minii All rights reserved.
 
+import ComposableArchitecture
 import SwiftUI
 
 struct BeachMapView: View {
-    @StateObject var mapViewModel: MapViewModel
+    let store: StoreOf<BeachMapStore>
     
     init() {
-        _mapViewModel = StateObject(wrappedValue: MapViewModel())
+        self.store = Store(
+            initialState: BeachMapStore.State(),
+            reducer: BeachMapStore()
+        )
     }
     
     var body: some View {
-        ZStack {
+        WithViewStore(store) { viewStore in
             ZStack {
-                NavigationLink(isActive: $mapViewModel.isPresentDetail) {
-                    if let detailBeach = mapViewModel.detailBeach {
-                        let viewModel = BeachInformationViewModel(beach: detailBeach, information: mapViewModel.detailInformation)
-                        
-                        BeachInformationView(viewModel: viewModel)
-                    }
-                } label: {
-                    EmptyView()
+                IfLetStore(
+                    store.scope(
+                        state: \.mapStore,
+                        action: BeachMapStore.Action.mapStore
+                    )
+                ) { store in
+                    NaverMapView(store: store)
+                        .edgesIgnoringSafeArea(.all)
                 }
-            }
-            
-            NaverMapView(beachList: mapViewModel.beachList)
-                .environmentObject(mapViewModel)
-                .edgesIgnoringSafeArea(.all)
-
-            VStack {
-                Spacer()
                 
-                ZStack {
-                    ForEach(mapViewModel.beachList, id: \.num) { beach in
-                        if mapViewModel.selectedIndex == beach.num {
-                            BeachPreviewCardView(beach: beach)
-                                .environmentObject(mapViewModel)
-                                .shadow(
-                                    color: Color.gray.opacity(0.3),
-                                    radius: 10
-                                )
-                                .padding()
-                                .transition(
-                                    .asymmetric(
-                                        insertion: .move(edge: .trailing), removal: .move(edge: .leading)
-                                    )
-                                )
-                        }
-                    }
-                }
+                previewCardSection(store: viewStore)
+            }
+            .task {
+                viewStore.send(.onAppear)
             }
         }
-        
     }
 }
 
 struct BeachMapView_Previews: PreviewProvider {
     static var previews: some View {
         BeachMapView()
+    }
+}
+
+extension BeachMapView {
+    @ViewBuilder
+    func previewCardSection(store: ViewStore<BeachMapStore.State, BeachMapStore.Action>) -> some View {
+        VStack {
+            Spacer()
+            
+            ZStack {
+                ForEach(store.beachList, id: \.num) { beach in
+                    if store.selectedIndex == beach.num {
+                        BeachPreviewCardView(beach: beach)
+                            .shadow(
+                                color: Color.gray.opacity(0.3),
+                                radius: 10
+                            )
+                            .padding()
+                            .transition(
+                                .asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                )
+                            )
+                    }
+                }
+            }
+        }
     }
 }
