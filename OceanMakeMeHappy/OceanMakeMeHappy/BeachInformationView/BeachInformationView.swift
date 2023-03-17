@@ -63,9 +63,6 @@ struct BeachInformationView: View {
                 .background(Material.thin)
                 .frame(maxHeight: 44)
                 .cornerRadius(6)
-                .onAppear {
-                    print(tags)
-                }
             }
             
         }
