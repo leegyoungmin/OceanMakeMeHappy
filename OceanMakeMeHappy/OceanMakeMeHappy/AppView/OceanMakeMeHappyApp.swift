@@ -19,7 +19,7 @@ struct OceanMakeMeHappyApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BeachMapView()
         }
     }
 }
