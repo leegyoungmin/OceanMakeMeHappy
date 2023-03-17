@@ -9,9 +9,9 @@ import NMapsMap
 import SwiftUI
 
 struct NaverMapView: UIViewRepresentable {
-    let viewStore: ViewStoreOf<BeachMapStore>
+    let viewStore: ViewStoreOf<NaverMapStore>
     
-    init(store: StoreOf<BeachMapStore>) {
+    init(store: StoreOf<NaverMapStore>) {
         self.viewStore = ViewStore(store)
     }
     
@@ -51,7 +51,7 @@ struct NaverMapView: UIViewRepresentable {
         
         resetRemainMarker(marker: marker)
         
-        viewStore.send(.selectBeach(index: beachInfo.num))
+        viewStore.send(.selectBeach(beachInfo.num))
         
         if marker.iconImage == NMF_MARKER_IMAGE_LIGHTBLUE { // UnSelected -> Selected
             withAnimation {
