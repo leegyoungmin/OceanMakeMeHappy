@@ -7,8 +7,6 @@
 import Foundation
 import NMapsMap
 
-import Foundation
-
 // MARK: - Beach
 struct Beaches: Decodable {
     let items: [Beach]
