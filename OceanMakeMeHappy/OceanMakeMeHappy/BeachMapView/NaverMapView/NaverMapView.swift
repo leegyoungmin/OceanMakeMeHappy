@@ -9,7 +9,7 @@ import NMapsMap
 import SwiftUI
 
 struct NaverMapView: UIViewRepresentable {
-    let viewStore: ViewStoreOf<NaverMapStore>
+    private let viewStore: ViewStoreOf<NaverMapStore>
     
     init(store: StoreOf<NaverMapStore>) {
         self.viewStore = ViewStore(store)

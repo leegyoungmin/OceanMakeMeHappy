@@ -13,7 +13,7 @@ struct BeachPreviewCardView: View {
     init(beach: Beach) {
         self.store = Store(
             initialState: BeachPreviewCardStore.State(beach: beach, information: nil),
-            reducer: BeachPreviewCardStore()._printChanges()
+            reducer: BeachPreviewCardStore()
         )
     }
     
