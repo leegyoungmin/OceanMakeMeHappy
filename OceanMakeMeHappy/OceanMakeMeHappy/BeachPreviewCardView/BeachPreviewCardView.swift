@@ -10,13 +10,6 @@ import SwiftUI
 struct BeachPreviewCardView: View {
     let store: StoreOf<BeachPreviewCardStore>
     
-    init(beach: Beach) {
-        self.store = Store(
-            initialState: BeachPreviewCardStore.State(beach: beach, information: nil),
-            reducer: BeachPreviewCardStore()
-        )
-    }
-    
     var body: some View {
         WithViewStore(store) { viewStore in
             HStack(alignment: .bottom, spacing: 0) {
@@ -48,9 +41,9 @@ struct BeachPreviewCardView: View {
 }
 
 struct BeachPreviewCardView_Previews: PreviewProvider {
-    static let beach = Beach.mockBeach
+    static let store = Store(initialState: BeachPreviewCardStore.State(beach: Beach.mockBeach), reducer: BeachPreviewCardStore())
     static var previews: some View {
-        BeachPreviewCardView(beach: beach)
+        BeachPreviewCardView(store: store)
             .previewLayout(.sizeThatFits)
             .padding()
     }
@@ -107,15 +100,17 @@ private extension BeachPreviewCardView {
     }
     
     var learnMoreButton: some View {
-        Button {
-            // TODO: - Navigate Button Action 추가하기
-        } label: {
-            Text("더보기")
-                .font(.headline)
-                .frame(width: 125, height: 35)
+        WithViewStore(store) { viewStore in
+            Button {
+                viewStore.send(.tapMoreButton)
+            } label: {
+                Text("더보기")
+                    .font(.headline)
+                    .frame(width: 125, height: 35)
+            }
+            .background(Color.accentColor)
+            .cornerRadius(10)
+            .foregroundColor(.white)
         }
-        .background(Color.accentColor)
-        .cornerRadius(10)
-        .foregroundColor(.white)
     }
 }

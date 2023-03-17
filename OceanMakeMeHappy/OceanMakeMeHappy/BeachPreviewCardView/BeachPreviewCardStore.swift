@@ -13,6 +13,9 @@ struct BeachPreviewCardStore: ReducerProtocol {
     }
     
     enum Action: Equatable {
+        // User Action
+        case tapMoreButton
+        
         // Inner Action
         case _requestInformation
         case _requestResponse(TaskResult<BeachInformation>)
@@ -23,6 +26,9 @@ struct BeachPreviewCardStore: ReducerProtocol {
     var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
+            case .tapMoreButton:
+                return .none
+                
             case ._requestInformation:
                 return .task { [contentId = state.beach.contentId] in
                     await ._requestResponse(
