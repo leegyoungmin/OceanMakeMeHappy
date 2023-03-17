@@ -10,13 +10,6 @@ import SwiftUI
 struct BeachMapView: View {
     let store: StoreOf<BeachMapStore>
     
-    init() {
-        self.store = Store(
-            initialState: BeachMapStore.State(),
-            reducer: BeachMapStore()
-        )
-    }
-    
     var body: some View {
         WithViewStore(store) { viewStore in
             ZStack {
@@ -55,8 +48,9 @@ struct BeachMapView: View {
 }
 
 struct BeachMapView_Previews: PreviewProvider {
+    static let store = Store(initialState: BeachMapStore.State(), reducer: BeachMapStore())
     static var previews: some View {
-        BeachMapView()
+        BeachMapView(store: store)
     }
 }
 
