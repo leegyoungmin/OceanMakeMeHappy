@@ -74,7 +74,8 @@ struct BeachInformationView: View {
     var headLineTextView: some View {
         WithViewStore(store) { viewStore in
             if let introduction = viewStore.information?.introduction {
-                Text(introduction)
+                let value = introduction.components(separatedBy: ["·", "\n", "\r"]).joined()
+                Text(value)
                     .multilineTextAlignment(.leading)
                     .minimumScaleFactor(0.9)
                     .truncationMode(.middle)
