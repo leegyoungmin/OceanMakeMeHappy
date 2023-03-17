@@ -20,8 +20,8 @@ struct BeachInformationView: View {
     
     func header() -> some View {
         ZStack(alignment: .bottomLeading) {
-            //            ScrollViewHeaderImage(store.mainImage)
-            //                .opacity(visibleRatio)
+//            ScrollViewHeaderImage(store.mainImage)
+//                .opacity(visibleRatio)
             
             Color.white
                 .opacity(1 - visibleRatio)
@@ -55,16 +55,19 @@ struct BeachInformationView: View {
                     .foregroundColor(.black)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack {
-//                        WithViewStore(store.scope(state: \.information)) { information in
-//                            ForEach(information.alltag) {
-//                                Text("# " + $0.wrappedValue)
-//                                    .font(.headline)
-//                                    .fontWeight(.thin)
-//                            }
-//                        }
+                    WithViewStore(self.store) { viewStore in
+                        if let tags = viewStore.information?.alltag {
+                            LazyHStack {
+                                ForEach(tags, id: \.self) { value in
+                                    Text("# " + value)
+                                        .font(.headline)
+                                        .fontWeight(.thin)
+                                }
+                            }
+                            .padding(10)
+                            .cornerRadius(6)
+                        }
                     }
-                    .padding(10)
                 }
                 .background(Material.thin)
                 .cornerRadius(6)
@@ -73,9 +76,11 @@ struct BeachInformationView: View {
             .padding()
             
             WithViewStore(store) { viewStore in
-                Text(viewStore.information.introduction)
-                    .font(.headline)
-                    .padding()
+                if let information = viewStore.information {
+                    Text(information.introduction)
+                        .font(.headline)
+                        .padding()
+                }
             }
             
             
@@ -106,8 +111,9 @@ struct BeachInformationView: View {
                 }
             }
             
-            WithViewStore(store.scope(state: \.information)) { information in
-                if let url = URL.generateJejuSearch(with: information.contentsid) {
+            WithViewStore(store) { viewStore in
+                if let contentId = viewStore.beach.contentId,
+                   let url = URL.generateJejuSearch(with: contentId) {
                     GroupBox {
                         HStack {
                             Image(systemName: "globe")
@@ -133,6 +139,9 @@ struct BeachInformationView: View {
                         .opacity(1 - visibleRatio)
                 }
             }
+        }
+        .onAppear {
+            ViewStore(store).send(.onAppear)
         }
     }
 }
