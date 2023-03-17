@@ -11,7 +11,7 @@ struct BeachMapStore: ReducerProtocol {
     struct State: Equatable {
         var beachList: [Beach] = []
         var mapStore: NaverMapStore.State?
-        var selectedBeachStore: BeachPreviewCardStore.State?
+        var selectedPreviewBeachState: BeachPreviewCardStore.State?
         var selectedIndex: Int = 0
     }
     
@@ -38,6 +38,7 @@ struct BeachMapStore: ReducerProtocol {
             case let .loadLocalResponse(.success(response)):
                 state.beachList = response
                 state.mapStore = NaverMapStore.State(beachList: response)
+                state.selectedPreviewBeachState = BeachPreviewCardStore.State(beach: response[0])
                 return .none
                 
             case .loadLocalResponse(.failure):
@@ -47,7 +48,7 @@ struct BeachMapStore: ReducerProtocol {
             case .mapStore(.selectBeach(let index)):
                 state.selectedIndex = index - 1
                 let beach = state.beachList[state.selectedIndex]
-                state.selectedBeachStore = BeachPreviewCardStore.State(beach: beach)
+                state.selectedPreviewBeachState = BeachPreviewCardStore.State(beach: beach)
                 return .none
                 
             case .mapStore:
@@ -60,7 +61,7 @@ struct BeachMapStore: ReducerProtocol {
         .ifLet(\.mapStore, action: /Action.mapStore) {
             NaverMapStore()
         }
-        .ifLet(\.selectedBeachStore, action: /Action.previewCardAction) {
+        .ifLet(\.selectedPreviewBeachState, action: /Action.previewCardAction) {
             BeachPreviewCardStore()
         }
     }

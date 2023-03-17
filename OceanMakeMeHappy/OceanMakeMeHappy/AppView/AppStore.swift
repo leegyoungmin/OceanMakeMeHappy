@@ -7,7 +7,6 @@
 import ComposableArchitecture
 
 struct AppStore: ReducerProtocol {
-    
     struct State: Equatable {
         
     }

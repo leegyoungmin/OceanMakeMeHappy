@@ -54,7 +54,7 @@ extension BeachMapView {
             ZStack {
                 IfLetStore(
                     self.store.scope(
-                        state: \.selectedBeachStore,
+                        state: \.selectedPreviewBeachState,
                         action: BeachMapStore.Action.previewCardAction
                     )
                 ) { store in
