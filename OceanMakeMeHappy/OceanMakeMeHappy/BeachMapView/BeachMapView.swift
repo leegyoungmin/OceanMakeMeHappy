@@ -20,6 +20,25 @@ struct BeachMapView: View {
     var body: some View {
         WithViewStore(store) { viewStore in
             ZStack {
+                NavigationLink(
+                    isActive: viewStore.binding(
+                        get: \.isPresentInformationView,
+                        send: { _ in return ._setPresentState(false) }
+                    )
+                ) {
+                    IfLetStore(
+                        store.scope(
+                            state: \.selectedInformationState,
+                            action: BeachMapStore.Action.informationAction
+                        )
+                    ) { store in
+                        BeachInformationView(store: store)
+                    }
+                } label: {
+                    EmptyView()
+                }
+
+                
                 naverMapSection
                 
                 VStack {

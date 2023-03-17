@@ -10,18 +10,26 @@ import NMapsMap
 struct BeachMapStore: ReducerProtocol {
     struct State: Equatable {
         var beachList: [Beach] = []
+        var selectedIndex: Int = 0
+        
         var mapStore: NaverMapStore.State?
         var selectedPreviewBeachState: BeachPreviewCardStore.State?
-        var selectedIndex: Int = 0
+        var selectedInformationState: BeachInformationStore.State?
+        
+        var isPresentInformationView: Bool = false
     }
     
     enum Action: Equatable {
         case onAppear
+        
+        // Child Action
         case mapStore(NaverMapStore.Action)
         case previewCardAction(BeachPreviewCardStore.Action)
+        case informationAction(BeachInformationStore.Action)
         
         // Inner Action
-        case loadLocalResponse(TaskResult<[Beach]>)
+        case _loadLocalResponse(TaskResult<[Beach]>)
+        case _setPresentState(Bool)
     }
     
     @Dependency(\.beachClient) var beachClient
@@ -31,17 +39,17 @@ struct BeachMapStore: ReducerProtocol {
             switch action {
             case .onAppear:
                 return .task {
-                    await .loadLocalResponse(
+                    await ._loadLocalResponse(
                         TaskResult { try await self.beachClient.loadBeachList() }
                     )
                 }
-            case let .loadLocalResponse(.success(response)):
+            case let ._loadLocalResponse(.success(response)):
                 state.beachList = response
                 state.mapStore = NaverMapStore.State(beachList: response)
                 state.selectedPreviewBeachState = BeachPreviewCardStore.State(beach: response[0])
                 return .none
                 
-            case .loadLocalResponse(.failure):
+            case ._loadLocalResponse(.failure):
                 return .none
                 
                 
@@ -54,7 +62,22 @@ struct BeachMapStore: ReducerProtocol {
             case .mapStore:
                 return .none
                 
+            case .previewCardAction(.tapMoreButton):
+                let beach = state.beachList[state.selectedIndex]
+                state.selectedInformationState = BeachInformationStore.State(beach: beach)
+                state.isPresentInformationView.toggle()
+                return .task {
+                    return ._setPresentState(true)
+                }
+                
+            case ._setPresentState(let isPresent):
+                state.isPresentInformationView = isPresent
+                return .none
+                
             case .previewCardAction:
+                return .none
+                
+            case .informationAction:
                 return .none
             }
         }
@@ -63,6 +86,9 @@ struct BeachMapStore: ReducerProtocol {
         }
         .ifLet(\.selectedPreviewBeachState, action: /Action.previewCardAction) {
             BeachPreviewCardStore()
+        }
+        .ifLet(\.selectedInformationState, action: /Action.informationAction) {
+            BeachInformationStore()
         }
     }
 }
