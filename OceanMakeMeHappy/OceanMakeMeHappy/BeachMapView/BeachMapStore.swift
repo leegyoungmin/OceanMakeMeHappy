@@ -11,12 +11,14 @@ struct BeachMapStore: ReducerProtocol {
     struct State: Equatable {
         var beachList: [Beach] = []
         var mapStore: NaverMapStore.State?
-        var selectedIndex: Int = 1
+        var selectedBeachStore: BeachPreviewCardStore.State?
+        var selectedIndex: Int = 0
     }
     
     enum Action: Equatable {
         case onAppear
         case mapStore(NaverMapStore.Action)
+        case previewCardAction(BeachPreviewCardStore.Action)
         
         // Inner Action
         case loadLocalResponse(TaskResult<[Beach]>)
@@ -43,15 +45,23 @@ struct BeachMapStore: ReducerProtocol {
                 
                 
             case .mapStore(.selectBeach(let index)):
-                state.selectedIndex = index
+                state.selectedIndex = index - 1
+                let beach = state.beachList[state.selectedIndex]
+                state.selectedBeachStore = BeachPreviewCardStore.State(beach: beach)
                 return .none
                 
             case .mapStore:
+                return .none
+                
+            case .previewCardAction:
                 return .none
             }
         }
         .ifLet(\.mapStore, action: /Action.mapStore) {
             NaverMapStore()
+        }
+        .ifLet(\.selectedBeachStore, action: /Action.previewCardAction) {
+            BeachPreviewCardStore()
         }
     }
 }

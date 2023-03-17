@@ -13,7 +13,7 @@ struct BeachMapView: View {
     init() {
         self.store = Store(
             initialState: BeachMapStore.State(),
-            reducer: BeachMapStore()
+            reducer: BeachMapStore()._printChanges()
         )
     }
     
@@ -52,21 +52,24 @@ extension BeachMapView {
             Spacer()
             
             ZStack {
-                ForEach(store.beachList, id: \.num) { beach in
-                    if store.selectedIndex == beach.num {
-                        BeachPreviewCardView(beach: beach)
-                            .shadow(
-                                color: Color.gray.opacity(0.3),
-                                radius: 10
+                IfLetStore(
+                    self.store.scope(
+                        state: \.selectedBeachStore,
+                        action: BeachMapStore.Action.previewCardAction
+                    )
+                ) { store in
+                    BeachPreviewCardView(store: store)
+                        .shadow(
+                            color: Color.gray.opacity(0.3),
+                            radius: 10
+                        )
+                        .padding()
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)
                             )
-                            .padding()
-                            .transition(
-                                .asymmetric(
-                                    insertion: .move(edge: .trailing),
-                                    removal: .move(edge: .leading)
-                                )
-                            )
-                    }
+                        )
                 }
             }
         }
