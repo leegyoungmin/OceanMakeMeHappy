@@ -6,8 +6,7 @@
 
 import Foundation
 
-// MARK: - BeachInformation
-struct BeachInformationResponse: Codable {
+struct BeachInformationResponse: Decodable {
     let items: [BeachInformation]
     
     var beachInformation: BeachInformation? {
@@ -16,8 +15,7 @@ struct BeachInformationResponse: Codable {
     }
 }
 
-// MARK: - Item
-struct BeachInformation: Codable, Hashable {
+struct BeachInformation: Decodable, Hashable {
     var alltag: [String]
     let contentsid, address, roadaddress: String
     let introduction: String
