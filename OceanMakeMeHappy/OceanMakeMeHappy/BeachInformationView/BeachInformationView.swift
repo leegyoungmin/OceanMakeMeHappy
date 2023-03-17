@@ -20,8 +20,10 @@ struct BeachInformationView: View {
     
     func header() -> some View {
         ZStack(alignment: .bottomLeading) {
-//            ScrollViewHeaderImage(store.mainImage)
-//                .opacity(visibleRatio)
+            WithViewStore(store) { viewStore in
+                ScrollViewHeaderImage(Image(uiImage: UIImage(data: viewStore.imageData) ?? UIImage()))
+                    .opacity(visibleRatio)
+            }
             
             Color.white
                 .opacity(1 - visibleRatio)
@@ -34,7 +36,7 @@ struct BeachInformationView: View {
                 WithViewStore(store) { viewStore in
                     Text(viewStore.beach.name)
                         .font(.largeTitle)
-                        .fontWeight(.semibold)
+                        .fontWeight(.heavy)
                     
                     Text(viewStore.beach.address)
                 }
@@ -44,91 +46,104 @@ struct BeachInformationView: View {
         }
     }
     
+    var tagScrollView: some View {
+        WithViewStore(store) { viewStore in
+            if let tags = viewStore.information?.alltag {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack {
+                        ForEach(tags, id: \.self) { value in
+                            Text("# " + value)
+                                .font(.headline)
+                                .fontWeight(.thin)
+                        }
+                    }
+                    .padding(10)
+                    .cornerRadius(6)
+                }
+                .background(Material.thin)
+                .frame(maxHeight: 44)
+                .cornerRadius(6)
+                .onAppear {
+                    print(tags)
+                }
+            }
+            
+        }
+    }
+    
+    var headLineTextView: some View {
+        WithViewStore(store) { viewStore in
+            if let introduction = viewStore.information?.introduction {
+                Text(introduction)
+                    .multilineTextAlignment(.leading)
+                    .minimumScaleFactor(0.9)
+                    .truncationMode(.middle)
+                    .font(.title3.bold())
+                    .padding()
+            }
+        }
+    }
+    
+    var descriptionTextView: some View {
+        WithViewStore(store.scope(state: \.beach)) { beach in
+            if let description = beach.description {
+                Text(description)
+                    .padding(.horizontal)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func LinkView(title: String, subTitle: String, with linkPath: URL) -> some View {
+        GroupBox {
+            HStack {
+                Image(systemName: "globe")
+                Text(title)
+                
+                Spacer()
+                
+                Group {
+                    Image(systemName: "arrow.up.right.square")
+                    
+                    Link(subTitle, destination: linkPath)
+                }
+            }
+        }
+        .padding([.top,.horizontal])
+    }
+    
     var body: some View {
         ScrollViewWithStickyHeader(
             header: header,
             headerHeight: 250,
             onScroll: handleOffset
         ) {
-            VStack(alignment: .leading) {
-                headerTitle
-                    .foregroundColor(.black)
+            VStack(spacing: 0) {
+                VStack(alignment: .leading) {
+                    headerTitle
+                        .foregroundColor(.black)
+                    
+                    tagScrollView
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
                 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    WithViewStore(self.store) { viewStore in
-                        if let tags = viewStore.information?.alltag {
-                            LazyHStack {
-                                ForEach(tags, id: \.self) { value in
-                                    Text("# " + value)
-                                        .font(.headline)
-                                        .fontWeight(.thin)
-                                }
-                            }
-                            .padding(10)
-                            .cornerRadius(6)
-                        }
+                headLineTextView
+                
+                descriptionTextView
+                
+                WithViewStore(store.scope(state: \.beach)) { beach in
+                    if let url = URL.generateNaverMapSearch(with: beach.name) {
+                        LinkView(title: "네이버 지도로 보기", subTitle: beach.name, with: url)
                     }
                 }
-                .background(Material.thin)
-                .cornerRadius(6)
-                .frame(maxHeight: 44)
-            }
-            .padding()
-            
-            WithViewStore(store) { viewStore in
-                if let information = viewStore.information {
-                    Text(information.introduction)
-                        .font(.headline)
-                        .padding()
-                }
-            }
-            
-            
-            WithViewStore(store.scope(state: \.beach)) { beach in
-                if let description = beach.description {
-                    Text(description)
-                        .padding()
-                }
-            }
-            
-            WithViewStore(store.scope(state: \.beach)) { beach in
-                if let url = URL.generateNaverMapSearch(with: beach.name) {
-                    GroupBox {
-                        HStack {
-                            Image(systemName: "globe")
-                            Text("네이버 지도에서 보기")
-                            
-                            Spacer()
-                            
-                            Group {
-                                Image(systemName: "arrow.up.right.square")
-                                
-                                Link(beach.name, destination: url)
-                            }
-                        }
+                
+                WithViewStore(store) { viewStore in
+                    if let contentId = viewStore.beach.contentId,
+                       let url = URL.generateJejuSearch(with: contentId) {
+                        
+                        LinkView(title: "자료 출처", subTitle: "VISIT JEJU", with: url)
                     }
-                    .padding([.top,.horizontal])
-                }
-            }
-            
-            WithViewStore(store) { viewStore in
-                if let contentId = viewStore.beach.contentId,
-                   let url = URL.generateJejuSearch(with: contentId) {
-                    GroupBox {
-                        HStack {
-                            Image(systemName: "globe")
-                            Text("자료 출처")
-                            
-                            Spacer()
-                            
-                            Group {
-                                Image(systemName: "arrow.up.right.square")
-                                
-                                Link("VISIT JEJU", destination: url)
-                            }
-                        }
-                    }
-                    .padding([.top,.horizontal])
                 }
             }
         }.toolbar {

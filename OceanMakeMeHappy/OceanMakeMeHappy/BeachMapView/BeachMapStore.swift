@@ -46,12 +46,13 @@ struct BeachMapStore: ReducerProtocol {
             case let ._loadLocalResponse(.success(response)):
                 state.beachList = response
                 state.mapStore = NaverMapStore.State(beachList: response)
-                state.selectedPreviewBeachState = BeachPreviewCardStore.State(beach: response[0])
+                state.selectedPreviewBeachState = BeachPreviewCardStore.State(
+                    beach: response[state.selectedIndex]
+                )
                 return .none
                 
             case ._loadLocalResponse(.failure):
                 return .none
-                
                 
             case .mapStore(.selectBeach(let index)):
                 state.selectedIndex = index - 1
@@ -65,7 +66,6 @@ struct BeachMapStore: ReducerProtocol {
             case .previewCardAction(.tapMoreButton):
                 let beach = state.beachList[state.selectedIndex]
                 state.selectedInformationState = BeachInformationStore.State(beach: beach)
-                state.isPresentInformationView.toggle()
                 return .task {
                     return ._setPresentState(true)
                 }
@@ -86,6 +86,7 @@ struct BeachMapStore: ReducerProtocol {
         }
         .ifLet(\.selectedPreviewBeachState, action: /Action.previewCardAction) {
             BeachPreviewCardStore()
+                ._printChanges()
         }
         .ifLet(\.selectedInformationState, action: /Action.informationAction) {
             BeachInformationStore()

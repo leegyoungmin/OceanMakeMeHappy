@@ -13,7 +13,7 @@ struct BeachMapView: View {
     init() {
         self.store = Store(
             initialState: BeachMapStore.State(),
-            reducer: BeachMapStore()._printChanges()
+            reducer: BeachMapStore()
         )
     }
     

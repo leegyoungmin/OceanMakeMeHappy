@@ -11,31 +11,29 @@ struct BeachPreviewCardView: View {
     let store: StoreOf<BeachPreviewCardStore>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
-            HStack(alignment: .bottom, spacing: 0) {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        imageSection
-                        
-                        Spacer()
-                        
-                        learnMoreButton
-                            .offset(y: 20)
-                    }
+        HStack(alignment: .bottom, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    imageSection
                     
-                    titleSection
+                    Spacer()
+                    
+                    learnMoreButton
+                        .offset(y: 20)
                 }
+                
+                titleSection
             }
-            .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.ultraThinMaterial)
-                    .offset(y: 65)
-            )
-            .cornerRadius(10)
-            .onAppear {
-                viewStore.send(._requestInformation)
-            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.ultraThinMaterial)
+                .offset(y: 65)
+        )
+        .cornerRadius(10)
+        .onAppear {
+            ViewStore(store).send(._requestInformation)
         }
     }
 }
@@ -72,7 +70,6 @@ private extension BeachPreviewCardView {
                             .resizable()
                             .scaledToFill()
                             .thumbnailStyle()
-                        
                     } else {
                         defaultIconImage
                     }
