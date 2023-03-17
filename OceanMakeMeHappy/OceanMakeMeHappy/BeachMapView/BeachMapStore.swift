@@ -9,29 +9,45 @@ import NMapsMap
 
 struct BeachMapStore: ReducerProtocol {
     struct State: Equatable {
-        let beachList: [Beach]
-        let locations: [NMGLatLng]
-        var selectedIndex: Int = 0
-        
-        init(beachList: [Beach], selectedIndex: Int) {
-            self.beachList = beachList
-            self.locations = beachList.map { $0.location }
-            self.selectedIndex = selectedIndex
-        }
+        var beachList: [Beach] = []
+        var mapStore: NaverMapStore.State?
+        var selectedIndex: Int = 1
     }
     
     enum Action: Equatable {
-        // User Action
-        case selectBeach(index: Int)
+        case onAppear
+        case mapStore(NaverMapStore.Action)
+        
+        // Inner Action
+        case loadLocalResponse(TaskResult<[Beach]>)
     }
+    
+    @Dependency(\.beachClient) var beachClient
     
     var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
-            case let .selectBeach(index):
+            case .onAppear:
+                return .task {
+                    await .loadLocalResponse(
+                        TaskResult { try await self.beachClient.loadBeachList() }
+                    )
+                }
+            case .mapStore(.selectBeach(let index)):
                 state.selectedIndex = index
                 return .none
+                
+            case let .loadLocalResponse(.success(response)):
+                state.beachList = response
+                state.mapStore = NaverMapStore.State(beachList: response)
+                return .none
+                
+            case let .loadLocalResponse(.failure):
+                return .none
             }
+        }
+        .ifLet(\.mapStore, action: /Action.mapStore) {
+            NaverMapStore()
         }
     }
 }
