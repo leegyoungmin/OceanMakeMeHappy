@@ -28,28 +28,15 @@ struct NaverMapView: UIViewRepresentable {
         
         return mapController
     }
-    
-    private func resetRemainMarker(marker: NMFMarker) {
-        let mapView = marker.mapView
-        
-        viewStore.locations.filter { $0 != marker.position }.forEach {
-            guard let point = mapView?.projection.point(from: $0) else { return }
-            guard let markers = mapView?.pickAll(point, withTolerance: 2) as? [NMFMarker] else { return }
-            
-            for mark in markers {
-                mark.iconImage = NMF_MARKER_IMAGE_LIGHTBLUE
-                mark.width = 16
-                mark.height = 21
-            }
-        }
-    }
      
     private func touchedMarker(marker overlay: NMFOverlay) -> Bool {
-        guard let marker = overlay as? NMFMarker else { return false }
+        guard let marker = overlay as? NMFMarker,
+              let beachInfo = marker.userInfo["beachInfo"] as? Beach,
+              let mapView = marker.mapView else {
+            return false
+        }
         
-        guard let beachInfo = marker.userInfo["beachInfo"] as? Beach else { return false }
-        
-        resetRemainMarker(marker: marker)
+        viewStore.send(._resetRemainMaker(marker: marker, mapView: mapView))
         
         viewStore.send(.selectBeach(beachInfo.num))
         
@@ -67,7 +54,7 @@ struct NaverMapView: UIViewRepresentable {
             return true
         }
         
-        return true
+        return false
     }
     
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) { }

@@ -33,16 +33,20 @@ struct BeachMapStore: ReducerProtocol {
                         TaskResult { try await self.beachClient.loadBeachList() }
                     )
                 }
-            case .mapStore(.selectBeach(let index)):
-                state.selectedIndex = index
-                return .none
-                
             case let .loadLocalResponse(.success(response)):
                 state.beachList = response
                 state.mapStore = NaverMapStore.State(beachList: response)
                 return .none
                 
             case .loadLocalResponse(.failure):
+                return .none
+                
+                
+            case .mapStore(.selectBeach(let index)):
+                state.selectedIndex = index
+                return .none
+                
+            case .mapStore:
                 return .none
             }
         }
