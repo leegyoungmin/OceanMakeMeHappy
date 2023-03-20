@@ -11,7 +11,7 @@ struct MainView: View {
     let store: StoreOf<MainStore>
     
     init() {
-        store = Store(initialState: MainStore.State(), reducer: MainStore())
+        store = Store(initialState: MainStore.State(), reducer: MainStore()._printChanges())
     }
     var body: some View {
         NavigationView {
@@ -23,7 +23,7 @@ struct MainView: View {
                     )
                 ) {
                     Group {
-                        Text("My Sea")
+                        PhotoFolderListView(store: photoListStore)
                             .tabItem {
                                 Image(systemName: "photo.stack")
                                 Text("나의 바다")
@@ -47,6 +47,13 @@ struct MainView: View {
 }
 
 private extension MainView {
+    var photoListStore: Store<PhotoFolderStore.State, PhotoFolderStore.Action> {
+        return store.scope(
+            state: { $0.photoListState },
+            action: MainStore.Action.photoListAction
+        )
+    }
+    
     var mapStore: Store<BeachMapStore.State, BeachMapStore.Action> {
         return store.scope(
             state: { $0.mapState },

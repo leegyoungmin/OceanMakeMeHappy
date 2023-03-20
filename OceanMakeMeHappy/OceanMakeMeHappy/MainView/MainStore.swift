@@ -9,6 +9,7 @@ import ComposableArchitecture
 struct MainStore: ReducerProtocol {
     struct State: Equatable {
         var selectedTab = Tab.mySea
+        var photoListState = PhotoFolderStore.State()
         var mapState = BeachMapStore.State()
         
         enum Tab {
@@ -21,6 +22,7 @@ struct MainStore: ReducerProtocol {
         // User Action
         case selectedTab(MainStore.State.Tab)
         
+        case photoListAction(PhotoFolderStore.Action)
         case mapAction(BeachMapStore.Action)
     }
     
@@ -34,6 +36,10 @@ struct MainStore: ReducerProtocol {
             default:
                 return .none
             }
+        }
+        
+        Scope(state: \.photoListState, action: /Action.photoListAction) {
+            PhotoFolderStore()
         }
         
         Scope(state: \.mapState, action: /Action.mapAction) {
