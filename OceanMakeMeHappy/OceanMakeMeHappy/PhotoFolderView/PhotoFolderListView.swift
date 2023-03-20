@@ -11,8 +11,8 @@ struct PhotoFolderListView: View {
     let store: StoreOf<PhotoFolderStore>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
-            ScrollView {
+        ScrollView {
+            WithViewStore(store) { viewStore in
                 ForEach(viewStore.folders, id: \.id) { folder in
                     RoundedRectangle(cornerRadius: 12)
                         .frame(height: 200, alignment: .center)
@@ -24,39 +24,20 @@ struct PhotoFolderListView: View {
                 }
                 .padding()
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                WithViewStore(store) { viewStore in
                     Button {
+                        
                         viewStore.send(.tapAddFolder)
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .alert(
-                "폴더 추가",
-                isPresented: viewStore.binding(
-                    get: \.isPresentAlert,
-                    send: { _ in ._setAlertState(false) }
-                )
-            ) {
-                TextField(
-                    "폴더명을 입력해주세요.",
-                    text: viewStore.binding(
-                        get: \.folderName,
-                        send: PhotoFolderStore.Action._textChanged
-                    )
-                )
-                
-                Button("취소") {
-                    viewStore.send(.alertDismiss)
-                }
-                
-                Button("확인") {
-                    viewStore.send(.alertDismiss)
-                }
-            }
         }
+        .textFieldAlert(store)
     }
 }
 
