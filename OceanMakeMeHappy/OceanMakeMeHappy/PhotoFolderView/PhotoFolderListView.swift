@@ -14,13 +14,7 @@ struct PhotoFolderListView: View {
         ScrollView {
             WithViewStore(store) { viewStore in
                 ForEach(viewStore.folders, id: \.id) { folder in
-                    RoundedRectangle(cornerRadius: 12)
-                        .frame(height: 200, alignment: .center)
-                        .overlay {
-                            Text(folder.name)
-                                .foregroundColor(.white)
-                        }
-                    
+                    FolderCardView(folder)
                 }
                 .padding()
             }
@@ -29,7 +23,6 @@ struct PhotoFolderListView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 WithViewStore(store) { viewStore in
                     Button {
-                        
                         viewStore.send(.tapAddFolder)
                     } label: {
                         Image(systemName: "plus")
@@ -41,14 +34,56 @@ struct PhotoFolderListView: View {
     }
 }
 
+extension PhotoFolderListView {
+    @ViewBuilder
+    func FolderCardView(_ folder: PhotoFolderStore.State.Folder) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.white)
+                .shadow(radius: 5)
+            
+            Image("IconImage")
+                .resizable()
+                .scaledToFill()
+                .frame(height: 250, alignment: .leading)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            VStack(spacing: .zero) {
+                Spacer()
+                
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(folder.name)
+                            .font(.system(size: 28, weight: .black, design: .rounded))
+                        
+                        Text(folder.description ?? "")
+                            .font(.headline)
+                            .lineLimit(1)
+                    }
+                    
+                    Spacer()
+                }
+                .frame(height: 70)
+                .padding()
+                .background(.white)
+                .cornerRadius(12)
+            }
+        }
+        .padding([.vertical], 5)
+    }
+}
+
 struct PhotoListView_Previews: PreviewProvider {
     static let store = Store(
-        initialState: PhotoFolderStore.State(),
+        initialState: PhotoFolderStore.State(folders: [.init(name: "Example", description: "ExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExample"), .init(name: "Example2"), .init(name: "Example3")]),
         reducer: PhotoFolderStore()
     )
     static var previews: some View {
-        NavigationView {
-            PhotoFolderListView(store: store)
+        Group {
+            NavigationView {
+                PhotoFolderListView(store: store)
+            }
         }
+        
     }
 }
