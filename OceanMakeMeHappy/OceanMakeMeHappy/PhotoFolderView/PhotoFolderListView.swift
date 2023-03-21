@@ -14,7 +14,7 @@ struct PhotoFolderListView: View {
         ScrollView {
             WithViewStore(store) { viewStore in
                 ForEach(viewStore.folders, id: \.id) { folder in
-                    FolderCardView(folder)
+                    folderCardView(folder)
                 }
                 .padding()
             }
@@ -35,12 +35,41 @@ struct PhotoFolderListView: View {
 }
 
 extension PhotoFolderListView {
+    var backgroundRoundRectangle: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(.white)
+            .shadow(radius: 5)
+    }
+    
     @ViewBuilder
-    func FolderCardView(_ folder: PhotoFolderStore.State.Folder) -> some View {
+    func folderInformationView(_ folder: PhotoFolderStore.State.Folder) -> some View {
+        VStack(spacing: .zero) {
+            Spacer()
+            
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(folder.name)
+                        .font(.system(size: 28, weight: .black, design: .rounded))
+                    
+                    Text(folder.description ?? "")
+                        .font(.headline)
+                        .lineLimit(1)
+                }
+                
+                Spacer()
+            }
+            .frame(height: 70)
+            .padding()
+            .background(.white)
+            .cornerRadius(12)
+        }
+    }
+    
+    
+    @ViewBuilder
+    func folderCardView(_ folder: PhotoFolderStore.State.Folder) -> some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.white)
-                .shadow(radius: 5)
+            backgroundRoundRectangle
             
             Image("IconImage")
                 .resizable()
@@ -48,42 +77,8 @@ extension PhotoFolderListView {
                 .frame(height: 250, alignment: .leading)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            VStack(spacing: .zero) {
-                Spacer()
-                
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(folder.name)
-                            .font(.system(size: 28, weight: .black, design: .rounded))
-                        
-                        Text(folder.description ?? "")
-                            .font(.headline)
-                            .lineLimit(1)
-                    }
-                    
-                    Spacer()
-                }
-                .frame(height: 70)
-                .padding()
-                .background(.white)
-                .cornerRadius(12)
-            }
+            folderInformationView(folder)
         }
         .padding([.vertical], 5)
-    }
-}
-
-struct PhotoListView_Previews: PreviewProvider {
-    static let store = Store(
-        initialState: PhotoFolderStore.State(folders: [.init(name: "Example", description: "ExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExampleExample"), .init(name: "Example2"), .init(name: "Example3")]),
-        reducer: PhotoFolderStore()
-    )
-    static var previews: some View {
-        Group {
-            NavigationView {
-                PhotoFolderListView(store: store)
-            }
-        }
-        
     }
 }
