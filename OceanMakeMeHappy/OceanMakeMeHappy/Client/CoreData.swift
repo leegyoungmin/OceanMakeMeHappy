@@ -47,4 +47,13 @@ extension CoreData {
         
         return folders
     }
+    
+    func addFolder(folder: PhotoFolderStore.State.Folder) {
+        let object = Folder(context: context)
+        object.id = folder.id
+        object.title = folder.name
+        object.body = folder.description
+        
+        saveContext()
+    }
 }

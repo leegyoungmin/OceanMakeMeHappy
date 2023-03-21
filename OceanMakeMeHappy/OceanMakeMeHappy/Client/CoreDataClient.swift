@@ -8,6 +8,7 @@ import ComposableArchitecture
 
 struct CoreDataClient {
     var loadFolders: @Sendable () async throws -> [Folder]
+    var addFolder: @Sendable (PhotoFolderStore.State.Folder) async throws -> [Folder]
 }
 
 extension DependencyValues {
@@ -20,8 +21,11 @@ extension DependencyValues {
 extension CoreDataClient: DependencyKey {
     static let liveValue = CoreDataClient(
         loadFolders: {
-            let folders = CoreData.shared.fetchFolders()
-            return folders
+            return CoreData.shared.fetchFolders()
+        },
+        addFolder: { folder in
+            CoreData.shared.addFolder(folder: folder)
+            return CoreData.shared.fetchFolders()
         }
     )
 }

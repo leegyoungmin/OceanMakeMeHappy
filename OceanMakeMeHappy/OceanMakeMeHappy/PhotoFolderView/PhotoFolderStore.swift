@@ -30,8 +30,11 @@ struct PhotoFolderStore: ReducerProtocol {
         case _textChanged(String)
         case _setAlertState(Bool)
         case _createFolder
+        
         case _fetchFolders
         case _fetchFolderResponse(TaskResult<[Folder]>)
+        
+        case _addFolderResponse(TaskResult<[Folder]>)
     }
     
     @Dependency(\.coreDataClient) var coreDataClient
@@ -63,11 +66,14 @@ struct PhotoFolderStore: ReducerProtocol {
                 return .none
                 
             case ._createFolder:
-//                let name = state.folderName
-//                let folder = State.Folder(name: name)
-//                state.folders.append(folder)
-//                state.folderName = ""
-                return .none
+                let folder = State.Folder(id: UUID(), name: state.folderName, description: nil)
+                return .task {
+                    await ._addFolderResponse(
+                        TaskResult {
+                            try await coreDataClient.addFolder(folder)
+                        }
+                    )
+                }
                 
             case ._fetchFolders:
                 return .task {
@@ -86,6 +92,14 @@ struct PhotoFolderStore: ReducerProtocol {
                 return .none
                 
             case ._fetchFolderResponse(.failure):
+                return .none
+                
+            case let ._addFolderResponse(.success(folders)):
+                return .task {
+                    ._fetchFolderResponse(.success(folders))
+                }
+                
+            case ._addFolderResponse(.failure):
                 return .none
             }
         }

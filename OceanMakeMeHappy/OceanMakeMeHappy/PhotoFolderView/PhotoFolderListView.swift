@@ -14,7 +14,12 @@ struct PhotoFolderListView: View {
         ScrollView {
             WithViewStore(store) { viewStore in
                 ForEach(viewStore.folders, id: \.id) { folder in
-                    folderCardView(folder)
+                    NavigationLink {
+                        Text(folder.name)
+                    } label: {
+                        folderCardView(folder)
+                    }
+                    .buttonStyle(FlatButtonStyle())
                 }
                 .padding()
             }
@@ -31,6 +36,9 @@ struct PhotoFolderListView: View {
             }
         }
         .textFieldAlert(store)
+        .onAppear {
+            ViewStore(store).send(.onAppear)
+        }
     }
 }
 
@@ -60,7 +68,7 @@ extension PhotoFolderListView {
             }
             .frame(height: 70)
             .padding()
-            .background(.white)
+            .background(.ultraThinMaterial)
             .cornerRadius(12)
         }
     }

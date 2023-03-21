@@ -32,7 +32,7 @@ struct FolderModifier: ViewModifier {
                 )
                 
                 Button("취소") {
-                    store.send(.alertDismiss)
+                    store.send(._setAlertState(false))
                 }
                 
                 Button("확인") {
